@@ -7,7 +7,7 @@
 
 import {
 	// These are the basic GraphQL types
-	// GraphQLInt,
+	GraphQLInt,
 	// GraphQLFloat,
 	GraphQLString,
 	GraphQLList,
@@ -20,6 +20,8 @@ import {
 	// This is used to define the Schema
 	GraphQLSchema
 } from 'graphql';
+
+import { getCourses } from './dynamodb';
 
 /**
   Fake Data
@@ -313,6 +315,13 @@ const Course = new GraphQLObjectType({
 	fields: () => ({
 		_id: { type: GraphQLString },
 		name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        pic: { type: GraphQLString },
+        price: { type: GraphQLInt },
+        calendarID: { type: GraphQLString },
+        bio: { type: GraphQLString },
+        location: { type: GraphQLString },
+        material: { type: GraphQLString },
 		teacher: {
 			type: new GraphQLList(Teacher),
 			resolve: function (course) {
@@ -478,7 +487,8 @@ const Query = new GraphQLObjectType({
 		courses: {
 			type: new GraphQLList(Course),
 			resolve: function () {
-				return coursesList;
+                return getCourses();
+				// return coursesList;
 			}
 		},
 		courseGroup: {

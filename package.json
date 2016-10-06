@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.6.6",
+    "bluebird": "^3.4.6",
     "express": "^4.14.0",
     "express-graphql": "^0.5.4",
     "graphql": "^0.7.1"
