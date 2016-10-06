@@ -1,0 +1,17 @@
+{
+  courseGroup {
+    _id
+    teacher{
+      _id
+    }
+  }
+}
+
+{
+  teachers {
+    _id
+    courseGroup {
+      _id
+    }
+  }
+}

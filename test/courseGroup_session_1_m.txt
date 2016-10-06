@@ -1,0 +1,9 @@
+{
+  sessions {
+    _id
+    courseGroup {
+      _id
+    }
+  }
+}
+

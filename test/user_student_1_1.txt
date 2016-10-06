@@ -1,0 +1,17 @@
+{
+	students {
+    _id
+    user {
+      _id
+    }
+  }
+}
+
+{
+  users {
+    _id
+    student {
+      _id
+    }
+  }
+}
