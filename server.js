@@ -2,6 +2,7 @@
 
 // Uses import/export ES6 Module Notation
 
+require('dotenv').config(); //Keep Config Variables out of code
 import express from 'express'; //HTTP Handling
 import bodyParser from 'body-parser'; //Parse Incoming request bodies
 import {

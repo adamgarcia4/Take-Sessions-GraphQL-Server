@@ -1,14 +1,15 @@
-import Promise from 'bluebird';
-import AWS from 'aws-sdk';
-// import 'aws-sdk/dist/aws-sdk';
-// const AWS = window.AWS;
+//**************Imports***************
 
+import Promise from 'bluebird'; //Promise Support for resolves
+import AWS from 'aws-sdk'; //AWS DynamoDB Integration
+
+// Configure DynamoDB Credentials
 const dynamoConfig = {
     //   sessionToken:    process.env.AWS_SESSION_TOKEN,
     //   region:          process.env.AWS_REGION
     region: 'us-west-2',
-    accessKeyId: 'AKIAJKCZAXNCDLA5QTSQ',
-    secretAccessKey: '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'
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey: process.env.secretAccessKey
 };
 
 const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
