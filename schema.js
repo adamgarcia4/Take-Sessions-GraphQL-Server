@@ -1,31 +1,21 @@
-// import * as _ from 'underscore';
-
-// This is the Dataset in our blog
-//import PostsList from './data/posts';
-//import AuthorsList from './data/authors';
-// import {CommentList, ReplyList} from './data/comments';
-
+//**************Schema Imports***************
 import {
 	// These are the basic GraphQL types
 	GraphQLInt,
-	// GraphQLFloat,
 	GraphQLString,
 	GraphQLList,
 	GraphQLObjectType,
-	// GraphQLEnumType,
-
-	// This is used to create required fields and arguments
-	GraphQLNonNull,
-
-	// This is used to define the Schema
-	GraphQLSchema
+	GraphQLNonNull, //This is used to create required fields and arguments
+	GraphQLSchema 	//This is used to define the Schema
 } from 'graphql';
 
-import { getCourses } from './dynamodb';
+import { // This contains all calls to DynamoDB
+	getCourses,
+	getStudents,
+	getStudent
+} from './dynamodb';
 
-/**
-  Fake Data
-**/
+//**************Fake Data********************
 const usersList = [
 	{
 		_id: 'U1',
@@ -40,25 +30,25 @@ const usersList = [
 	}
 ];
 
-const studentsList = [
-	{
-		_id: 'S1',
-		userID: 'U1',
-		courseGroupID: [
-			'CG1',
-			'CG2'
-		]
-	},
-	{
-		_id: 'S2',
-		userID: 'U2',
-		courseGroupID: [
-			'CG2',
-			'CG3',
-			'CG1'
-		]
-	}
-];
+// const studentsList = [
+// 	{
+// 		_id: 'S1',
+// 		userID: 'U1',
+// 		courseGroupID: [
+// 			'CG1',
+// 			'CG2'
+// 		]
+// 	},
+// 	{
+// 		_id: 'S2',
+// 		userID: 'U2',
+// 		courseGroupID: [
+// 			'CG2',
+// 			'CG3',
+// 			'CG1'
+// 		]
+// 	}
+// ];
 
 const teachersList = [
 	{
@@ -200,9 +190,7 @@ const paymentsList = [
 
 ]
 
-/**
-  DEFINE YOUR TYPES BELOW
-**/
+//**************Object Definitions********************
 
 const User = new GraphQLObjectType({
 	name: 'User',
@@ -213,9 +201,11 @@ const User = new GraphQLObjectType({
 			type: Student,
 			resolve: function (user) {
 				// return teachersList.find(teacher => teacher._id == user.teacherID);
-				return studentsList.find(function (student) {
-					return student._id == user.studentID;
-				});
+				// return studentsList.find(function (student) {
+				// 	return student._id == user.studentID;
+				// });
+				console.log('user id: ', user.studentID);
+				return getStudent(user.studentID);
 			}
 		},
 		teacher: {
@@ -461,7 +451,8 @@ const Payment = new GraphQLObjectType({
 	})
 })
 
-// This is the Root Query
+//**************Root Query Definition********************
+
 const Query = new GraphQLObjectType({
 	name: 'BlogSchema',
 	description: 'Root of the Blog Schema',
@@ -475,7 +466,7 @@ const Query = new GraphQLObjectType({
 		students: {
 			type: new GraphQLList(Student),
 			resolve: function () {
-				return studentsList;
+				return getStudents();
 			}
 		},
 		teachers: {
@@ -512,7 +503,11 @@ const Query = new GraphQLObjectType({
 	})
 });
 
-// The Schema
+//**************Root Mutation Definition********************
+
+//TODO: Add Mutation
+
+//**************Schema Composition********************
 const Schema = new GraphQLSchema({
 	query: Query
     // Query

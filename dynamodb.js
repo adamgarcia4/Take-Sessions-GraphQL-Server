@@ -3,28 +3,18 @@
 import Promise from 'bluebird'; //Promise Support for resolves
 import AWS from 'aws-sdk'; //AWS DynamoDB Integration
 
+//Reference: https://github.com/serverless/serverless-graphql-blog/blob/master/blog/lib/dynamo.js
+
 // Configure DynamoDB Credentials
 const dynamoConfig = {
-    //   sessionToken:    process.env.AWS_SESSION_TOKEN,
-    //   region:          process.env.AWS_REGION
     region: 'us-west-2',
-    accessKeyId: process.env.accessKeyId,
-    secretAccessKey: process.env.secretAccessKey
-};
+    accessKeyId: process.env.AWS_ACCESSKEYID,
+    secretAccessKey: process.env.AWS_SECRETACCESSKEY
+}; //TODO: Can a sessionID be used instead?
 
 const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
-var table = 'take-sessions-email';
-
-// var params = {
-//     TableName: table,
-//     Key: {
-//         'id': '12'
-//     }
-// };
-
-// console.log('Adding a new item...');
-
+// Student Resolvers
 export function getStudents() {
     return new Promise(function (resolve, reject) {
         console.log('querying database!');
@@ -39,6 +29,26 @@ export function getStudents() {
     })
 }
 
+export function getStudent(id) {
+    return new Promise(function (resolve, reject) {
+        console.log('querying database!');
+        var params = {
+            TableName: 'take-sessions-students',
+            // Key: {
+            //     _id: id
+            // }
+            KeyConditionExpression: id
+        };
+        docClient.query(params, function(err, data) {
+            if(err) return reject(err);
+            console.log(data);
+            return resolve(data["Item"]);
+        });
+    })
+}
+
+
+// Course Resolvers
 export function getCourses() {
     return new Promise(function (resolve, reject) {
         console.log('querying database!');
@@ -47,7 +57,7 @@ export function getCourses() {
         };
         docClient.scan(params, function(err, data) {
             if(err) return reject(err);
-            // console.log(data);
+            console.log(data);
             return resolve(data["Items"]);
         });
     })
