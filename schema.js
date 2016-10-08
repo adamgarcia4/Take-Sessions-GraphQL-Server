@@ -10,6 +10,7 @@ import {
 } from 'graphql';
 
 import { // This contains all calls to DynamoDB
+	getUsers,
 	getCourses,
 	getStudents,
 	getStudent
@@ -197,6 +198,7 @@ const User = new GraphQLObjectType({
 	description: 'This represents a single User',
 	fields: () => ({
 		_id: { type: new GraphQLNonNull(GraphQLString) },
+		name: { type: GraphQLString },
 		student: {
 			type: Student,
 			resolve: function (user) {
@@ -460,7 +462,7 @@ const Query = new GraphQLObjectType({
 		users: {
 			type: new GraphQLList(User),
 			resolve: function () {
-				return usersList;
+				return getUsers();
 			}
 		},
 		students: {

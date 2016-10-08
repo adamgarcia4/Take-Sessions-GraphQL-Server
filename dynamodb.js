@@ -14,6 +14,24 @@ const dynamoConfig = {
 
 const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
+//**************USERS***************
+
+// Get List of Users
+export function getUsers() {
+    return new Promise(function (resolve, reject) {
+        console.log('querying database!');
+        var params = {
+            TableName: 'take-sessions-users'
+        };
+        docClient.scan(params, function(err, data) {
+            if(err) return reject(err);
+            console.log(data);
+            return resolve(data["Items"]);
+        });
+    })
+}
+
+
 // Student Resolvers
 export function getStudents() {
     return new Promise(function (resolve, reject) {
@@ -46,6 +64,8 @@ export function getStudent(id) {
         });
     })
 }
+
+
 
 
 // Course Resolvers
