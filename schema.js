@@ -10,10 +10,11 @@ import {
 } from 'graphql';
 
 import { // This contains all calls to DynamoDB
-	getUsers,
-	getCourses,
-	getStudents,
-	getStudent
+	// getUsers,
+	// getCourses,
+	// getStudents,
+	// getStudent
+	getList
 } from './dynamodb';
 
 //**************Fake Data********************
@@ -462,44 +463,44 @@ const Query = new GraphQLObjectType({
 		users: {
 			type: new GraphQLList(User),
 			resolve: function () {
-				return getUsers();
+				// return getUsers('take-sessions-users');
+				return getList('User');
 			}
 		},
 		students: {
 			type: new GraphQLList(Student),
 			resolve: function () {
-				return getStudents();
+				return getList('Student');
 			}
 		},
 		teachers: {
 			type: new GraphQLList(Teacher),
 			resolve: function () {
-				return teachersList;
+				return getList('Teacher');
 			}
 		},
 		courses: {
 			type: new GraphQLList(Course),
 			resolve: function () {
-                return getCourses();
-				// return coursesList;
+                return getList('Course');
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function () {
-				return courseGroupList;
+				return getList('CourseGroup');
 			}
 		},
 		sessions: {
 			type: new GraphQLList(Session),
 			resolve: function () {
-				return sessionsList;
+				return getList('Session');
 			}
 		},
 		payments: {
 			type: new GraphQLList(Payment),
 			resolve: function () {
-				return paymentsList;
+				return getList('Payment');
 			}
 		}
 	})

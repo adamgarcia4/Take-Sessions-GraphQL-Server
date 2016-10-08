@@ -16,12 +16,27 @@ const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
 //**************USERS***************
 
-// Get List of Users
-export function getUsers() {
+var getListLookup = {
+    "User": "take-sessions-users",
+    "Student": "take-sessions-students",
+    "Teacher": "take-sessions-teachers",
+    "Course": "take-sessions-courses",
+    "CourseGroup" :"take-sessions-coursegroup",
+    "Session": "take-sessions-sessions",
+    "Payment": "take-sessions-payments"
+}
+
+
+
+// Get List from Database
+export function getList(tableName) {
     return new Promise(function (resolve, reject) {
+        if ( !(tableName in getListLookup) ) {
+            return reject(new Error("Invalid Table Name" + tableName));
+        }
         console.log('querying database!');
         var params = {
-            TableName: 'take-sessions-users'
+            TableName: getListLookup[tableName]
         };
         docClient.scan(params, function(err, data) {
             if(err) return reject(err);
@@ -30,7 +45,6 @@ export function getUsers() {
         });
     })
 }
-
 
 // Student Resolvers
 export function getStudents() {
