@@ -90,10 +90,11 @@ export function getDataById(tableName, id) {
 			return reject(new Error("Invalid Table Name" + tableName));
 		}
 		console.log('querying database by ID!');
-		console.log('Id is: ', id, typeof (id));
-
+		
+		var table = getListLookup[tableName];
+		console.log(table);
 		var params = {
-			TableName: getListLookup[tableName],
+			TableName: table,
 			KeyConditionExpression: '#id = :idVal',
 			ExpressionAttributeNames: {
 				"#id": "_id"
@@ -108,7 +109,7 @@ export function getDataById(tableName, id) {
 				console.log('err is: ', err);
 				return reject(err);
 			}
-			console.log('data', data.Items);
+			console.log('data', data);
 
 			return resolve(data["Items"][0]);
 		});

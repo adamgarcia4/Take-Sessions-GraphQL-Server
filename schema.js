@@ -39,7 +39,7 @@ const User = new GraphQLObjectType({
 		teacher: {
 			type: Teacher,
 			resolve: function (user) {
-				return getDataById('Student', user.teacherID);
+				return getDataById('Teacher', user.teacherID);
 			}
 		}
 	})
@@ -147,7 +147,7 @@ const CourseGroup = new GraphQLObjectType({
 		session: {
 			type: new GraphQLList(Session),
 			resolve: function (courseGroup) {
-				return getDataListById('Session', courseGroupID);
+				return getDataListById('Session', courseGroup.sessionID);
 			}
 		}
 	})
@@ -210,8 +210,8 @@ const Query = new GraphQLObjectType({
 		teachers: {
 			type: new GraphQLList(Teacher),
 			resolve: function () {
-				return teachersList;
-				//return getDataList('Teacher');
+				// return teachersList;
+				return getDataList('Teacher');
 			}
 		},
 		courses: {
