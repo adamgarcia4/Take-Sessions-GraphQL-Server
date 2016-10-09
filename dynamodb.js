@@ -15,7 +15,6 @@ const dynamoConfig = {
 
 const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
-//**************USERS***************
 
 var getListLookup = {
 	"User": "take-sessions-users",
@@ -85,7 +84,6 @@ export function getDataListById(tableName, id) {
 })
 }
 
-
 export function getDataById(tableName, id) {
 	return new Promise(function (resolve, reject) {
 		if (!(tableName in getListLookup)) {
@@ -116,133 +114,3 @@ export function getDataById(tableName, id) {
 		});
 	})
 }
-
-//     var params = {
-//       TableName: postsTable,
-//       AttributesToGet: [
-//         'id',
-//         'title',
-//         'author',
-//         'bodyContent'
-//       ]
-//     };
-
-//     docClient.scan(params, function(err, data) {
-//       if (err) return reject(err);
-//       return resolve(data["Items"]);
-//     });
-
-//   });
-
-
-
-// export function createPost(post) {
-//   return new Promise(function(resolve, reject) {
-//     var params = {
-//       TableName: postsTable,
-//       Item: post
-//     };
-
-//     docClient.put(params, function(err, data) {
-//       if (err) return reject(err);
-//       return resolve(post);
-//     });
-
-//   });
-// }
-
-
-
-// docClient.get(params, function (err, data) {
-//     if (err) {
-//         console.error('Unable to add item. Error JSON:', JSON.stringify(err, null, 2));
-//     } else {
-//         console.log('Added item:', JSON.stringify(data, null, 2));
-//     }
-// });
-
-// const stage = process.env.SERVERLESS_STAGE;
-// const projectName = process.env.SERVERLESS_PROJECT;
-// const postsTable = projectName + '-posts-' + stage;
-// const authorsTable = projectName + '-authors-' + stage;
-// const commentsTable = projectName + '-comments-' + stage;
-
-
-
-// export function getPosts() {
-//   return new Promise(function(resolve, reject) {
-//     var params = {
-//       TableName: postsTable,
-//       AttributesToGet: [
-//         'id',
-//         'title',
-//         'author',
-//         'bodyContent'
-//       ]
-//     };
-
-//     docClient.scan(params, function(err, data) {
-//       if (err) return reject(err);
-//       return resolve(data["Items"]);
-//     });
-
-//   });
-// }
-
-// export function getAuthor(id) {
-//   return new Promise(function(resolve, reject) {
-//     var params = {
-//       TableName: authorsTable,
-//       Key: {
-//         id: id
-//       },
-//       AttributesToGet: [
-//         'id',
-//         'name'
-//       ]
-//     };
-
-//     docClient.get(params, function(err, data) {
-//       if (err) return reject(err);
-//       return resolve(data["Item"]);
-//     });
-
-//   });
-// }
-
-// export function getAuthors() {
-//   return new Promise(function(resolve, reject) {
-//     var params = {
-//       TableName: authorsTable,
-//       AttributesToGet: [
-//         'id',
-//         'name'
-//       ]
-//     };
-
-//     docClient.scan(params, function(err, data) {
-//       if (err) return reject(err);
-//       return resolve(data["Items"]);
-//     });
-
-//   });
-// }
-
-// export function getComments() {
-//   return new Promise(function(resolve, reject) {
-//     var params = {
-//       TableName: commentsTable,
-//       AttributesToGet: [
-//         'id',
-//         'content',
-//         'author'
-//       ]
-//     };
-
-//     docClient.scan(params, function(err, data) {
-//       if (err) return reject(err);
-//       return resolve(data["Items"]);
-//     });
-
-//   });
-// }

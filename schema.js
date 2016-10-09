@@ -151,7 +151,7 @@ const CourseGroup = new GraphQLObjectType({
 			}
 		}
 	})
-})
+});
 
 const Session = new GraphQLObjectType({
 	name: 'Session',
@@ -171,7 +171,7 @@ const Session = new GraphQLObjectType({
 			}
 		}
 	})
-})
+});
 
 const Payment = new GraphQLObjectType({
 	name: 'Payment',
@@ -186,7 +186,7 @@ const Payment = new GraphQLObjectType({
 		}
 
 	})
-})
+});
 
 //**************Root Query Definition********************
 
