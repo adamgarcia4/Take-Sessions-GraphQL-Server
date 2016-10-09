@@ -7,94 +7,114 @@ import AWS from 'aws-sdk'; //AWS DynamoDB Integration
 
 // Configure DynamoDB Credentials
 const dynamoConfig = {
-    region: 'us-west-2',
-    accessKeyId: process.env.AWS_ACCESSKEYID,
-    secretAccessKey: process.env.AWS_SECRETACCESSKEY
+	region: 'us-west-2',
+	accessKeyId: process.env.AWS_ACCESSKEYID,
+	secretAccessKey: process.env.AWS_SECRETACCESSKEY
 }; //TODO: Can a sessionID be used instead?
+
 
 const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
 //**************USERS***************
 
 var getListLookup = {
-    "User": "take-sessions-users",
-    "Student": "take-sessions-students",
-    "Teacher": "take-sessions-teachers",
-    "Course": "take-sessions-courses",
-    "CourseGroup" :"take-sessions-coursegroup",
-    "Session": "take-sessions-sessions",
-    "Payment": "take-sessions-payments"
+	"User": "take-sessions-users",
+	"Student": "take-sessions-students",
+	"Teacher": "take-sessions-teachers",
+	"Course": "take-sessions-courses",
+	"CourseGroup": "take-sessions-coursegroup",
+	"Session": "take-sessions-sessions",
+	"Payment": "take-sessions-payments"
 }
-
-
 
 // Get List from Database
-export function getList(tableName) {
-    return new Promise(function (resolve, reject) {
-        if ( !(tableName in getListLookup) ) {
-            return reject(new Error("Invalid Table Name" + tableName));
-        }
-        console.log('querying database!');
-        var params = {
-            TableName: getListLookup[tableName]
-        };
-        docClient.scan(params, function(err, data) {
-            if(err) return reject(err);
-            console.log(data);
-            return resolve(data["Items"]);
-        });
-    })
+export function getDataList(tableName) {
+	return new Promise(function (resolve, reject) {
+		if (!(tableName in getListLookup)) {
+			return reject(new Error("Invalid Table Name" + tableName));
+		}
+		console.log('querying database!');
+		var params = {
+			TableName: getListLookup[tableName]
+		};
+		docClient.scan(params, function (err, data) {
+			if (err) return reject(err);
+			console.log(data);
+			return resolve(data["Items"]);
+		});
+	})
 }
 
-// Student Resolvers
-export function getStudents() {
-    return new Promise(function (resolve, reject) {
-        console.log('querying database!');
-        var params = {
-            TableName: 'take-sessions-students'
-        };
-        docClient.scan(params, function(err, data) {
-            if(err) return reject(err);
-            console.log(data);
-            return resolve(data["Items"]);
-        });
-    })
+export function getDataListById(tableName, id) {
+	return new Promise(function (resolve, reject) {
+		if (!(tableName in getListLookup)) {
+			return reject(new Error("Invalid Table Name" + tableName));
+		}
+
+		// console.log('querying database by ID!');
+
+		var table = getListLookup[tableName];
+
+		var RequestItems = {};
+
+		RequestItems[table] = {
+			Keys: []
+		};
+
+		for(var i=0; i <id.length; i++) {
+			RequestItems[table]["Keys"][i] = {
+				"_id": id[i]
+			}
+		}
+
+		var params = {
+			"RequestItems": RequestItems
+		}
+
+		// console.log('Params is: ', params)
+
+		docClient.batchGet(params, function (err, data) {
+			if (err) {
+				console.log('err is: ', err);
+				return reject(err);
+			}
+
+			console.log('data', data["Responses"][table]);
+			return resolve(data["Responses"][table]);
+		});
+})
 }
 
-export function getStudent(id) {
-    return new Promise(function (resolve, reject) {
-        console.log('querying database!');
-        var params = {
-            TableName: 'take-sessions-students',
-            // Key: {
-            //     _id: id
-            // }
-            KeyConditionExpression: id
-        };
-        docClient.query(params, function(err, data) {
-            if(err) return reject(err);
-            console.log(data);
-            return resolve(data["Item"]);
-        });
-    })
-}
 
+export function getDataById(tableName, id) {
+	return new Promise(function (resolve, reject) {
+		if (!(tableName in getListLookup)) {
+			return reject(new Error("Invalid Table Name" + tableName));
+		}
+		console.log('querying database by ID!');
+		console.log('Id is: ', id, typeof (id));
 
+		var params = {
+			TableName: getListLookup[tableName],
+			KeyConditionExpression: '#id = :idVal',
+			ExpressionAttributeNames: {
+				"#id": "_id"
+			},
+			ExpressionAttributeValues: {
+				":idVal": id
+			}
+		};
 
+		docClient.query(params, function (err, data) {
+			if (err) {
+				console.log('err is: ', err);
+				return reject(err);
+			}
+			console.log('data', data.Items);
 
-// Course Resolvers
-export function getCourses() {
-    return new Promise(function (resolve, reject) {
-        console.log('querying database!');
-        var params = {
-            TableName: 'take-sessions-courses'
-        };
-        docClient.scan(params, function(err, data) {
-            if(err) return reject(err);
-            console.log(data);
-            return resolve(data["Items"]);
-        });
-    })
+			return resolve(data["Items"][0]);
+		});
+	})
 }
 
 //     var params = {
