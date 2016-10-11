@@ -12,7 +12,14 @@ import {
 import { // This contains all calls to DynamoDB
 	getDataList,
 	getDataListById,
-	getDataById
+	getDataById,
+	getBatchUsers,
+	getBatchStudents,
+	getBatchTeachers,
+	getBatchCourses,
+	getBatchCourseGroups,
+	getBatchSessions,
+	getBatchPayments
 } from './dynamodb';
 
 import {
@@ -21,6 +28,16 @@ import {
 } from './fakeData';
 
 // Faked Data can be imported from 'fakeData.js'
+
+var DataLoader = require('dataloader');
+
+var userLoader = new DataLoader(keys => getBatchUsers(keys));
+var studentLoader = new DataLoader(keys => getBatchStudents(keys));
+var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
+var courseLoader = new DataLoader(keys => getBatchCourses(keys));
+var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
+var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
+var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
 
 //**************Object Definitions********************
 
@@ -33,13 +50,16 @@ const User = new GraphQLObjectType({
 		student: {
 			type: Student,
 			resolve: function (user) {
-				return getDataById('Student', user.studentID);
+				//var test = [user.studentID];
+				return studentLoader.load(user.studentID);
+				// return getDataById({tableName:'Student', id: user.studentID});
 			}
 		},
 		teacher: {
 			type: Teacher,
 			resolve: function (user) {
-				return getDataById('Teacher', user.teacherID);
+				return teacherLoader.load(user.teacherID);
+				// return getDataById({tableName: 'Teacher', id: user.teacherID});
 			}
 		}
 	})
@@ -50,16 +70,24 @@ const Student = new GraphQLObjectType({
 	description: 'This represents a Student Account',
 	fields: () => ({
 		_id: { type: GraphQLString },
+		name: {type: GraphQLString },
 		user: {
 			type: User,
 			resolve: function (student) {
-				return getDataById('User', student.userID);
+				return userLoader.load(student.userID);
+				// return getDataById({tableName: 'User', id: student.userID});
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function (student) {
-				return getDataListById('CourseGroup', student.courseGroupID);
+				var iterArr = [];
+				var idList = student.courseGroupID;
+				for (var i=0; i<idList.length; i++) {
+					
+					iterArr.push(courseGroupLoader.load(idList[i]));
+				}
+				return Promise.all(iterArr);
 			}
 		}
 	})
@@ -74,19 +102,31 @@ const Teacher = new GraphQLObjectType({
 		user: {
 			type: User,
 			resolve: function (teacher) {
-				return getDataById('User', teacher.userID);
+				return userLoader.load(teacher.userID);
+				// return getDataById({tableName: 'User', id: teacher.userID});
 			}
 		},
 		courses: {
 			type: new GraphQLList(Course),
 			resolve: function (teacher) {
-				return getDataListById('Course', teacher.courseID);
+				var iterArr = [];
+				var idList = teacher.courseID;
+				console.log(idList);
+				for (var i=0; i<idList.length; i++) {
+					
+					iterArr.push(courseLoader.load(idList[i]));
+				}
+				return Promise.all(iterArr);				
+				// return courseLoader(teacher.courseID);
+				// return getDataListById('Course', teacher.courseID);
+				
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function (teacher) {
-				return getDataListById('CourseGroup', teacher.courseGroupID);
+				return courseGroupLoader.load(teacher.courseGroupID);
+				// return getDataListById('CourseGroup', teacher.courseGroupID);
 			}
 		}
 	})
@@ -108,13 +148,15 @@ const Course = new GraphQLObjectType({
 		teacher: {
 			type: new GraphQLList(Teacher),
 			resolve: function (course) {
-				return getDataListById('Teacher', course.teacherID);
+				return teacherLoader.load(course.teacherID);
+				// return getDataListById('Teacher', course.teacherID);
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function (course) {
-				return getDataListById('CourseGroup', course.courseGroupID);
+				return courseGroupLoader.load(course.courseGroupID);
+				// return getDataListById('CourseGroup', course.courseGroupID);
 			}
 		}
 
@@ -129,25 +171,29 @@ const CourseGroup = new GraphQLObjectType({
 		course: {
 			type: Course,
 			resolve: function (courseGroup) {
-				return getDataById('Course', courseGroup.courseID);
+				return courseLoader.load(courseGroup.courseID);
+				// return getDataById({tableName: 'Course', id: courseGroup.courseID});
 			}
 		},
 		student: {
 			type: new GraphQLList(Student),
 			resolve: function (courseGroup) {
-				return getDataListById('Student', courseGroup.studentID);
+				return courseGroupLoader.load(courseGroup.studentID);
+				// return getDataListById('Student', courseGroup.studentID);
 			}
 		},
 		teacher: {
 			type: new GraphQLList(Teacher),
 			resolve: function (courseGroup) {
-				return getDataListById('Teacher', courseGroup.teacherID);
+				return teacherLoader.load(courseGroup.teacherID);
+				// return getDataListById('Teacher', courseGroup.teacherID);
 			}
 		},
 		session: {
 			type: new GraphQLList(Session),
 			resolve: function (courseGroup) {
-				return getDataListById('Session', courseGroup.sessionID);
+				return sessionLoader.load(courseGroup.sessionID);
+				// return getDataListById('Session', courseGroup.sessionID);
 			}
 		}
 	})
@@ -161,13 +207,15 @@ const Session = new GraphQLObjectType({
 		courseGroup: {
 			type: CourseGroup,
 			resolve: function (session) {
-				return getDataById('CourseGroup', session.courseGroupID);
+				return courseGroupLoader.load(session.courseGroupID);
+				// return getDataById({tableName: 'CourseGroup', id: session.courseGroupID});
 			}
 		},
 		payment: {
 			type: new GraphQLList(Payment),
 			resolve: function (session) {
-				return getDataListById('Payment', session.paymentID);
+				return paymentLoader.load(session.paymentID);
+				// return getDataListById('Payment', session.paymentID);
 			}
 		}
 	})
@@ -181,7 +229,8 @@ const Payment = new GraphQLObjectType({
 		session: {
 			type: Session,
 			resolve: function (payment) {
-				return getDataById('Session', payment.sessionID);
+				return sessionLoader.load(payment.sessionID);
+				// return getDataById({tableName: 'Session', id: payment.sessionID});
 			}
 		}
 

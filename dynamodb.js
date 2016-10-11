@@ -44,12 +44,93 @@ export function getDataList(tableName) {
 	})
 }
 
+export function getBatchUsers(idList) {
+	return getDataListById('User', idList);
+}
+
+export function getBatchStudents(idList) {
+	return getDataListById('Student', idList);
+}
+
+export function getBatchTeachers(idList) {
+	return getDataListById('Teacher', idList);
+}
+
+export function getBatchCourses(idList) {
+	var iterArr = [];
+	for (var i=0; i<idList.length; i++) {
+		
+		iterArr.push(getDataListById('Course',idList[i]));
+		console.log(iterArr);
+	}
+	console.log('iter arr is', iterArr);
+	return Promise.all(iterArr);
+	
+	// return Promise.all()
+	
+	// getDataListById('Course', idList);
+}
+export function getBatchCourseGroups(idList) {
+	return getDataListById('CourseGroup', idList);
+}
+export function getBatchSessions(idList) {
+	return getDataListById('Session', idList);
+}
+export function getBatchPayments(idList) {
+	return getDataListById('Payment', idList);
+}
+
+
+
+
+
+// export function getBatchStudents(idList) {
+// 	return new Promise(function (resolve, reject) {
+// 		// if (!(tableName in getListLookup)) {
+// 		// 	return reject(new Error("Invalid Table Name" + tableName));
+// 		// }
+
+// 		// console.log('querying database by ID!');
+
+// 		var table = 'take-sessions-students'; //getListLookup[tableName];
+
+// 		var RequestItems = {};
+// 		console.log('idList', idList);
+// 		RequestItems[table] = {
+// 			Keys: []
+// 		};
+
+// 		for(var i=0; i <idList.length; i++) {
+// 			RequestItems[table]["Keys"][i] = {
+// 				"_id": idList[i]
+// 			}
+// 		}
+
+// 		var params = {
+// 			"RequestItems": RequestItems
+// 		}
+
+// 		// console.log('Params is: ', params)
+
+// 		docClient.batchGet(params, function (err, data) {
+// 			if (err) {
+// 				console.log('err is: ', err);
+// 				return reject(err);
+// 			}
+// 			console.log('data full is: ',data);
+// 			console.log('data', data["Responses"][table]);
+// 			return resolve(data["Responses"][table]);
+// 		});
+// })
+// }
+
 export function getDataListById(tableName, id) {
 	return new Promise(function (resolve, reject) {
 		if (!(tableName in getListLookup)) {
 			return reject(new Error("Invalid Table Name" + tableName));
 		}
 
+		console.log('idList is: ', id);
 		// console.log('querying database by ID!');
 
 		var table = getListLookup[tableName];
@@ -84,14 +165,16 @@ export function getDataListById(tableName, id) {
 })
 }
 
-export function getDataById(tableName, id) {
+export function getDataById(tableParams) {
+	
 	return new Promise(function (resolve, reject) {
-		if (!(tableName in getListLookup)) {
+		if (!(tableParams.tableName in getListLookup)) {
 			return reject(new Error("Invalid Table Name" + tableName));
 		}
 		console.log('querying database by ID!');
 		
-		var table = getListLookup[tableName];
+		var table = getListLookup[tableParams.tableName];
+		var id = tableParams.id;
 		console.log(table);
 		var params = {
 			TableName: table,
@@ -115,3 +198,37 @@ export function getDataById(tableName, id) {
 		});
 	})
 }
+
+
+
+// export function getDataById(tableName, id) {
+// 	return new Promise(function (resolve, reject) {
+// 		if (!(tableName in getListLookup)) {
+// 			return reject(new Error("Invalid Table Name" + tableName));
+// 		}
+// 		console.log('querying database by ID!');
+		
+// 		var table = getListLookup[tableName];
+// 		console.log(table);
+// 		var params = {
+// 			TableName: table,
+// 			KeyConditionExpression: '#id = :idVal',
+// 			ExpressionAttributeNames: {
+// 				"#id": "_id"
+// 			},
+// 			ExpressionAttributeValues: {
+// 				":idVal": id
+// 			}
+// 		};
+
+// 		docClient.query(params, function (err, data) {
+// 			if (err) {
+// 				console.log('err is: ', err);
+// 				return reject(err);
+// 			}
+// 			console.log('data', data);
+
+// 			return resolve(data["Items"][0]);
+// 		});
+// 	})
+// }
