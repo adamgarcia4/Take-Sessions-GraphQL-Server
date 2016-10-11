@@ -17,12 +17,12 @@ const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 var DataLoader = require('dataloader');
 
 var userLoader = new DataLoader(keys => getBatchData('User', keys));
-var studentLoader = new DataLoader(keys => getBatchStudents(keys));
-var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
-var courseLoader = new DataLoader(keys => getBatchCourses(keys));
-var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
-var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
-var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
+// var studentLoader = new DataLoader(keys => getBatchStudents(keys));
+// var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
+// var courseLoader = new DataLoader(keys => getBatchCourses(keys));
+// var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
+// var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
+// var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
 
 var getListLookup = {
 	"User": {
@@ -31,51 +31,59 @@ var getListLookup = {
 	},
 	"Student": {
 		table: "take-sessions-students",
-		loader: studentLoader
+		// loader: studentLoader
 	},
 	"Teacher": {
 		table: "take-sessions-teachers",
-		loader: teacherLoader
+		// loader: teacherLoader
 	},
 	"Course": {
 		table: "take-sessions-courses",
-		loader: courseLoader
+		// loader: courseLoader
 	},
 	"CourseGroup": {
 		table: "take-sessions-coursegroup",
-		loader: courseGroupLoader
+		// loader: courseGroupLoader
 	},
 	"Session": {
 		table: "take-sessions-sessions",
-		loader: sessionLoader
+		// loader: sessionLoader
 	},
 	"Payment": {
 		table: "take-sessions-payments",
-		loader: paymentLoader
+		// loader: paymentLoader
 	}
 };
-// console.log('getListLookup', getListLookup);
-// console.log('userLoader in obj: ', getListLookup.User.loader);
-
-// getListLookup["User"]["loader"] = ;
-
-
-//Accepts an array of array of values, separated by each _id request
 
 export function getBatchUsers(modelName, idList) {
 	console.log('inside getbatchusers');
-	console.log(idList);
+	console.log(idList, idList.length);
 
-	var iterArr = [];
-	// ID list is already passed into here
-	for (var i=0; i<idList.length; i++) {
-		// console.log('model name is: ', getListLookup[modelName]);
-		// console.log('loader is: ', modelName.loader);
-		iterArr.push(getListLookup[modelName].loader.load(idList[i]));
-		// console.log(iterArr);
+	if (!Array.isArray(idList)) {
+		// return new Promise(function (resolve, reject) {
+			console.log('single');
+			return getListLookup[modelName].loader.load(idList);
+			// var iterArr = [
+			// 	getListLookup[modelName].loader.load(idList)
+			// ];
+			// return Promise.all(iterArr);
+		
+		
+	} else {
+		console.log('array')
+		var iterArr = [];
+		// ID list is already passed into here
+		for (var i = 0; i < idList.length; i++) {
+			// console.log('model name is: ', getListLookup[modelName]);
+			// console.log('loader is: ', modelName.loader);
+			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
+			// console.log(iterArr);
+		}
+		// console.log('iter arr is', iterArr);
+		return Promise.all(iterArr);
 	}
-	// console.log('iter arr is', iterArr);
-	return Promise.all(iterArr);
+
+
 
 
 
@@ -83,28 +91,6 @@ export function getBatchUsers(modelName, idList) {
 	// return getDataListById('User', idList);
 
 	//has to export a promise for an array of values (Values can be arrays of other values)
-}
-
-export function getBatchStudents(idList) {
-	// need to split the list into single arrays
-	return getDataListById('Student', idList);
-}
-
-export function getBatchTeachers(idList) {
-	return getDataListById('Teacher', idList);
-}
-
-export function getBatchCourses(idList) {
-		return getBatchData('Course', idList);
-}
-
-
-
-
-
-export function getBatchData(modelName, idList) {
-
-		return getDataListById(modelName, idList);
 }
 
 export function getBatchCourseGroups(idList) {
@@ -117,6 +103,45 @@ export function getBatchPayments(idList) {
 	return getDataListById('Payment', idList);
 }
 
+// <_id> input --> Promise <val> output
+export function getBatchData(modelName, id) {
+	return new Promise(function (resolve, reject) {
+		// console.log('testing');
+		// console.log(modelName);
+		// console.log(getListLookup[modelName]);
+		if (getListLookup[modelName].table == undefined) {
+			return reject(new Error("Invalid Table Name"));
+		}
+
+		console.log('idList is: ', id);
+
+		var table = getListLookup[modelName].table;
+
+		// Build up Params List
+		var RequestItems = {};
+		RequestItems[table] = {
+			Keys: []
+		};
+		for (var i = 0; i < id.length; i++) {
+			RequestItems[table]["Keys"][i] = {
+				"_id": id[i]
+			}
+		}
+		var params = {
+			"RequestItems": RequestItems
+		}
+
+		docClient.batchGet(params, function (err, data) {
+			if (err) {
+				console.log('err is: ', err);
+				return reject(err);
+			}
+
+			console.log('data', data["Responses"][table]);
+			return resolve(data["Responses"][table]);
+		});
+	})
+}
 
 
 // Get List from Database
@@ -137,104 +162,14 @@ export function getDataList(tableName) {
 	})
 }
 
-
-
-
-
-// export function getBatchStudents(idList) {
-// 	return new Promise(function (resolve, reject) {
-// 		// if (!(tableName in getListLookup)) {
-// 		// 	return reject(new Error("Invalid Table Name" + tableName));
-// 		// }
-
-// 		// console.log('querying database by ID!');
-
-// 		var table = 'take-sessions-students'; //getListLookup[tableName];
-
-// 		var RequestItems = {};
-// 		console.log('idList', idList);
-// 		RequestItems[table] = {
-// 			Keys: []
-// 		};
-
-// 		for(var i=0; i <idList.length; i++) {
-// 			RequestItems[table]["Keys"][i] = {
-// 				"_id": idList[i]
-// 			}
-// 		}
-
-// 		var params = {
-// 			"RequestItems": RequestItems
-// 		}
-
-// 		// console.log('Params is: ', params)
-
-// 		docClient.batchGet(params, function (err, data) {
-// 			if (err) {
-// 				console.log('err is: ', err);
-// 				return reject(err);
-// 			}
-// 			console.log('data full is: ',data);
-// 			console.log('data', data["Responses"][table]);
-// 			return resolve(data["Responses"][table]);
-// 		});
-// })
-// }
-
-
-//has to export a promise for an array of values (Values can be arrays of other values)
-
-export function getDataListById(tableName, id) {
-	return new Promise(function (resolve, reject) {
-		if (!(tableName in getListLookup)) {
-			return reject(new Error("Invalid Table Name" + tableName));
-		}
-
-		console.log('idList is: ', id);
-		// console.log('querying database by ID!');
-
-		var table = getListLookup[tableName];
-
-		var RequestItems = {};
-
-		RequestItems[table] = {
-			Keys: []
-		};
-
-		for(var i=0; i <id.length; i++) {
-			RequestItems[table]["Keys"][i] = {
-				"_id": id[i]
-			}
-		}
-
-		var params = {
-			"RequestItems": RequestItems
-		}
-
-		// console.log('Params is: ', params)
-
-		docClient.batchGet(params, function (err, data) {
-			if (err) {
-				console.log('err is: ', err);
-				return reject(err);
-			}
-
-			console.log('data', data["Responses"][table]);
-			return resolve(data["Responses"][table]);
-		});
-	})
-
-	
-}
-
 export function getDataById(tableParams) {
-	
+
 	return new Promise(function (resolve, reject) {
 		if (!(tableParams.tableName in getListLookup)) {
 			return reject(new Error("Invalid Table Name" + tableName));
 		}
 		console.log('querying database by ID!');
-		
+
 		var table = getListLookup[tableParams.tableName];
 		var id = tableParams.id;
 		console.log(table);
@@ -260,37 +195,3 @@ export function getDataById(tableParams) {
 		});
 	})
 }
-
-
-
-// export function getDataById(tableName, id) {
-// 	return new Promise(function (resolve, reject) {
-// 		if (!(tableName in getListLookup)) {
-// 			return reject(new Error("Invalid Table Name" + tableName));
-// 		}
-// 		console.log('querying database by ID!');
-		
-// 		var table = getListLookup[tableName];
-// 		console.log(table);
-// 		var params = {
-// 			TableName: table,
-// 			KeyConditionExpression: '#id = :idVal',
-// 			ExpressionAttributeNames: {
-// 				"#id": "_id"
-// 			},
-// 			ExpressionAttributeValues: {
-// 				":idVal": id
-// 			}
-// 		};
-
-// 		docClient.query(params, function (err, data) {
-// 			if (err) {
-// 				console.log('err is: ', err);
-// 				return reject(err);
-// 			}
-// 			console.log('data', data);
-
-// 			return resolve(data["Items"][0]);
-// 		});
-// 	})
-// }

@@ -102,7 +102,20 @@ const Teacher = new GraphQLObjectType({
 		user: {
 			type: User,
 			resolve: function (teacher) {
-				return getBatchUsers('User', teacher.userID); // return userLoader.load(teacher.userID);
+				// console.log(teacher.userID, teacher.userID.length);
+				// console.log(teacher.userID[0])
+				// console.log(teacher.userID[1])
+				return getBatchUsers('User', teacher.userID);
+				
+				// getBatchUsers('User', teacher.userID).then(function(data) {
+				// 		console.log('data1', data);
+				// 		return data;
+				// 	}, function(err) {
+				// 		console.log('err', err);
+				// 		return err;
+				// 	}); // return userLoader.load(teacher.userID);
+				// console.log('test', test);
+				
 				// return getDataById({tableName: 'User', id: teacher.userID});
 			}
 		},
