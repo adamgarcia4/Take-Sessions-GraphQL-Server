@@ -31,13 +31,13 @@ import {
 
 var DataLoader = require('dataloader');
 
-var userLoader = new DataLoader(keys => getBatchUsers(keys));
-var studentLoader = new DataLoader(keys => getBatchStudents(keys));
-var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
-var courseLoader = new DataLoader(keys => getBatchCourses(keys));
-var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
-var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
-var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
+// var userLoader = new DataLoader(keys => getBatchUsers(keys));
+// var studentLoader = new DataLoader(keys => getBatchStudents(keys));
+// var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
+// var courseLoader = new DataLoader(keys => getBatchCourses(keys));
+// var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
+// var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
+// var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
 
 //**************Object Definitions********************
 
@@ -102,7 +102,7 @@ const Teacher = new GraphQLObjectType({
 		user: {
 			type: User,
 			resolve: function (teacher) {
-				return userLoader.load(teacher.userID);
+				return getBatchUsers('User', teacher.userID); // return userLoader.load(teacher.userID);
 				// return getDataById({tableName: 'User', id: teacher.userID});
 			}
 		},
