@@ -16,13 +16,13 @@ const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
 var DataLoader = require('dataloader');
 
-var userLoader = new DataLoader(keys => getBatchData('User', keys));
-// var studentLoader = new DataLoader(keys => getBatchStudents(keys));
-// var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
-// var courseLoader = new DataLoader(keys => getBatchCourses(keys));
-// var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
-// var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
-// var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
+var userLoader = new DataLoader(keys => getFromDatabase('User', keys));
+var studentLoader = new DataLoader(keys => getFromDatabase('Student', keys));
+var teacherLoader = new DataLoader(keys => getFromDatabase('Teacher', keys));
+var courseLoader = new DataLoader(keys => getFromDatabase('Course', keys));
+var courseGroupLoader = new DataLoader(keys => getFromDatabase('CourseGroup', keys));
+var sessionLoader = new DataLoader(keys => getFromDatabase('Session', keys));
+var paymentLoader = new DataLoader(keys => getFromDatabase('Payment', keys));
 
 var getListLookup = {
 	"User": {
@@ -31,70 +31,58 @@ var getListLookup = {
 	},
 	"Student": {
 		table: "take-sessions-students",
-		// loader: studentLoader
+		loader: studentLoader
 	},
 	"Teacher": {
 		table: "take-sessions-teachers",
-		// loader: teacherLoader
+		loader: teacherLoader
 	},
 	"Course": {
 		table: "take-sessions-courses",
-		// loader: courseLoader
+		loader: courseLoader
 	},
 	"CourseGroup": {
 		table: "take-sessions-coursegroup",
-		// loader: courseGroupLoader
+		loader: courseGroupLoader
 	},
 	"Session": {
 		table: "take-sessions-sessions",
-		// loader: sessionLoader
+		loader: sessionLoader
 	},
 	"Payment": {
 		table: "take-sessions-payments",
-		// loader: paymentLoader
+		loader: paymentLoader
 	}
 };
 
-export function getBatchUsers(modelName, idList) {
-	console.log('inside getbatchusers');
-	console.log(idList, idList.length);
+export function getBatchData(modelName, idList) {
+	console.log('inside getbatchData');
 
-	if (!Array.isArray(idList)) {
-		// return new Promise(function (resolve, reject) {
-			console.log('single');
+	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient 
 			return getListLookup[modelName].loader.load(idList);
-			// var iterArr = [
-			// 	getListLookup[modelName].loader.load(idList)
-			// ];
-			// return Promise.all(iterArr);
-		
-		
-	} else {
-		console.log('array')
+	} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
 		var iterArr = [];
-		// ID list is already passed into here
 		for (var i = 0; i < idList.length; i++) {
-			// console.log('model name is: ', getListLookup[modelName]);
-			// console.log('loader is: ', modelName.loader);
 			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
-			// console.log(iterArr);
 		}
-		// console.log('iter arr is', iterArr);
+		// Returns a promise that resolves once all of the individual promises in the array is resolved.
 		return Promise.all(iterArr);
 	}
-
-
-
-
-
-	// return getBatchData('User', idList);
-	// return getDataListById('User', idList);
-
-	//has to export a promise for an array of values (Values can be arrays of other values)
 }
 
-export function getBatchCourseGroups(idList) {
-	return getDataListById('CourseGroup', idList);
+export function getBatchCourseGroups(modelName, idList) {
+	console.log('inside getbatchcoursegroups');
+	
+	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient 
+			return getListLookup[modelName].loader.load(idList);
+	} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
+		var iterArr = [];
+		for (var i = 0; i < idList.length; i++) {
+			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
+		}
+		// Returns a promise that resolves once all of the individual promises in the array is resolved.
+		return Promise.all(iterArr);
+	}
 }
 export function getBatchSessions(idList) {
 	return getDataListById('Session', idList);
@@ -104,17 +92,11 @@ export function getBatchPayments(idList) {
 }
 
 // <_id> input --> Promise <val> output
-export function getBatchData(modelName, id) {
+export function getFromDatabase(modelName, id) {
 	return new Promise(function (resolve, reject) {
-		// console.log('testing');
-		// console.log(modelName);
-		// console.log(getListLookup[modelName]);
 		if (getListLookup[modelName].table == undefined) {
 			return reject(new Error("Invalid Table Name"));
 		}
-
-		console.log('idList is: ', id);
-
 		var table = getListLookup[modelName].table;
 
 		// Build up Params List
@@ -131,12 +113,12 @@ export function getBatchData(modelName, id) {
 			"RequestItems": RequestItems
 		}
 
+		// Send request to DynamoDB server
 		docClient.batchGet(params, function (err, data) {
 			if (err) {
 				console.log('err is: ', err);
 				return reject(err);
 			}
-
 			console.log('data', data["Responses"][table]);
 			return resolve(data["Responses"][table]);
 		});

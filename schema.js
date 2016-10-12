@@ -11,15 +11,16 @@ import {
 
 import { // This contains all calls to DynamoDB
 	getDataList,
-	getDataListById,
-	getDataById,
-	getBatchUsers,
-	getBatchStudents,
-	getBatchTeachers,
-	getBatchCourses,
-	getBatchCourseGroups,
-	getBatchSessions,
-	getBatchPayments
+	// getDataListById,
+	// getDataById,
+	// getBatchUsers,
+	// getBatchStudents,
+	// getBatchTeachers,
+	// getBatchCourses,
+	// getBatchCourseGroups,
+	// getBatchSessions,
+	// getBatchPayments,
+	getBatchData
 } from './dynamodb';
 
 import {
@@ -50,16 +51,13 @@ const User = new GraphQLObjectType({
 		student: {
 			type: Student,
 			resolve: function (user) {
-				//var test = [user.studentID];
-				return studentLoader.load(user.studentID);
-				// return getDataById({tableName:'Student', id: user.studentID});
+				return getBatchData('Student', user.studentID);
 			}
 		},
 		teacher: {
 			type: Teacher,
 			resolve: function (user) {
-				return teacherLoader.load(user.teacherID);
-				// return getDataById({tableName: 'Teacher', id: user.teacherID});
+				return getBatchData('Teacher', user.teacherID);
 			}
 		}
 	})
@@ -74,20 +72,13 @@ const Student = new GraphQLObjectType({
 		user: {
 			type: User,
 			resolve: function (student) {
-				return userLoader.load(student.userID);
-				// return getDataById({tableName: 'User', id: student.userID});
+				return getBatchData('User', student.userID);
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function (student) {
-				var iterArr = [];
-				var idList = student.courseGroupID;
-				for (var i=0; i<idList.length; i++) {
-					
-					iterArr.push(courseGroupLoader.load(idList[i]));
-				}
-				return Promise.all(iterArr);
+				return getBatchData('CourseGroup', student.courseGroupID);
 			}
 		}
 	})
@@ -102,44 +93,19 @@ const Teacher = new GraphQLObjectType({
 		user: {
 			type: User,
 			resolve: function (teacher) {
-				// console.log(teacher.userID, teacher.userID.length);
-				// console.log(teacher.userID[0])
-				// console.log(teacher.userID[1])
-				return getBatchUsers('User', teacher.userID);
-				
-				// getBatchUsers('User', teacher.userID).then(function(data) {
-				// 		console.log('data1', data);
-				// 		return data;
-				// 	}, function(err) {
-				// 		console.log('err', err);
-				// 		return err;
-				// 	}); // return userLoader.load(teacher.userID);
-				// console.log('test', test);
-				
-				// return getDataById({tableName: 'User', id: teacher.userID});
+				return getBatchData('User', teacher.userID);
 			}
 		},
 		courses: {
 			type: new GraphQLList(Course),
 			resolve: function (teacher) {
-				var iterArr = [];
-				var idList = teacher.courseID;
-				console.log(idList);
-				for (var i=0; i<idList.length; i++) {
-					
-					iterArr.push(courseLoader.load(idList[i]));
-				}
-				return Promise.all(iterArr);				
-				// return courseLoader(teacher.courseID);
-				// return getDataListById('Course', teacher.courseID);
-				
+				return getBatchData('Course', teacher.courseID);
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function (teacher) {
-				return courseGroupLoader.load(teacher.courseGroupID);
-				// return getDataListById('CourseGroup', teacher.courseGroupID);
+				return getBatchData('CourseGroup', teacher.courseGroupID);
 			}
 		}
 	})
@@ -161,18 +127,15 @@ const Course = new GraphQLObjectType({
 		teacher: {
 			type: new GraphQLList(Teacher),
 			resolve: function (course) {
-				return teacherLoader.load(course.teacherID);
-				// return getDataListById('Teacher', course.teacherID);
+				return getBatchData('Teacher', course.teacherID);
 			}
 		},
 		courseGroup: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function (course) {
-				return courseGroupLoader.load(course.courseGroupID);
-				// return getDataListById('CourseGroup', course.courseGroupID);
+				return getBatchData('CourseGroup', course.courseGroupID);
 			}
 		}
-
 	})
 });
 
@@ -184,29 +147,25 @@ const CourseGroup = new GraphQLObjectType({
 		course: {
 			type: Course,
 			resolve: function (courseGroup) {
-				return courseLoader.load(courseGroup.courseID);
-				// return getDataById({tableName: 'Course', id: courseGroup.courseID});
+				return getBatchData('Course', courseGroup.courseID);
 			}
 		},
 		student: {
 			type: new GraphQLList(Student),
 			resolve: function (courseGroup) {
-				return courseGroupLoader.load(courseGroup.studentID);
-				// return getDataListById('Student', courseGroup.studentID);
+				return getBatchData('Student', courseGroup.studentID);
 			}
 		},
 		teacher: {
 			type: new GraphQLList(Teacher),
 			resolve: function (courseGroup) {
-				return teacherLoader.load(courseGroup.teacherID);
-				// return getDataListById('Teacher', courseGroup.teacherID);
+				return getBatchData('Teacher', courseGroup.teacherID);
 			}
 		},
 		session: {
 			type: new GraphQLList(Session),
 			resolve: function (courseGroup) {
-				return sessionLoader.load(courseGroup.sessionID);
-				// return getDataListById('Session', courseGroup.sessionID);
+				return getBatchData('Session', courseGroup.sessionID);
 			}
 		}
 	})
@@ -220,15 +179,13 @@ const Session = new GraphQLObjectType({
 		courseGroup: {
 			type: CourseGroup,
 			resolve: function (session) {
-				return courseGroupLoader.load(session.courseGroupID);
-				// return getDataById({tableName: 'CourseGroup', id: session.courseGroupID});
+				return getBatchData('CourseGroup', session.courseGroupID);
 			}
 		},
 		payment: {
 			type: new GraphQLList(Payment),
 			resolve: function (session) {
-				return paymentLoader.load(session.paymentID);
-				// return getDataListById('Payment', session.paymentID);
+				return getBatchData('Payment', session.paymentID);
 			}
 		}
 	})
@@ -242,8 +199,7 @@ const Payment = new GraphQLObjectType({
 		session: {
 			type: Session,
 			resolve: function (payment) {
-				return sessionLoader.load(payment.sessionID);
-				// return getDataById({tableName: 'Session', id: payment.sessionID});
+				return getBatchData('Session', payment.sessionID);
 			}
 		}
 
