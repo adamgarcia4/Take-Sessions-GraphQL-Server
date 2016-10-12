@@ -70,27 +70,6 @@ export function getBatchData(modelName, idList) {
 	}
 }
 
-export function getBatchCourseGroups(modelName, idList) {
-	console.log('inside getbatchcoursegroups');
-	
-	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient 
-			return getListLookup[modelName].loader.load(idList);
-	} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
-		var iterArr = [];
-		for (var i = 0; i < idList.length; i++) {
-			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
-		}
-		// Returns a promise that resolves once all of the individual promises in the array is resolved.
-		return Promise.all(iterArr);
-	}
-}
-export function getBatchSessions(idList) {
-	return getDataListById('Session', idList);
-}
-export function getBatchPayments(idList) {
-	return getDataListById('Payment', idList);
-}
-
 // <_id> input --> Promise <val> output
 export function getFromDatabase(modelName, id) {
 	return new Promise(function (resolve, reject) {
@@ -125,8 +104,7 @@ export function getFromDatabase(modelName, id) {
 	})
 }
 
-
-// Get List from Database
+// Get List from Database | TODO: Enable Caching on this
 export function getDataList(tableName) {
 	return new Promise(function (resolve, reject) {
 		if (!(tableName in getListLookup)) {
@@ -140,40 +118,6 @@ export function getDataList(tableName) {
 			if (err) return reject(err);
 			console.log(data);
 			return resolve(data["Items"]);
-		});
-	})
-}
-
-export function getDataById(tableParams) {
-
-	return new Promise(function (resolve, reject) {
-		if (!(tableParams.tableName in getListLookup)) {
-			return reject(new Error("Invalid Table Name" + tableName));
-		}
-		console.log('querying database by ID!');
-
-		var table = getListLookup[tableParams.tableName];
-		var id = tableParams.id;
-		console.log(table);
-		var params = {
-			TableName: table,
-			KeyConditionExpression: '#id = :idVal',
-			ExpressionAttributeNames: {
-				"#id": "_id"
-			},
-			ExpressionAttributeValues: {
-				":idVal": id
-			}
-		};
-
-		docClient.query(params, function (err, data) {
-			if (err) {
-				console.log('err is: ', err);
-				return reject(err);
-			}
-			console.log('data', data);
-
-			return resolve(data["Items"][0]);
 		});
 	})
 }

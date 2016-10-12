@@ -9,17 +9,8 @@ import {
 	GraphQLSchema 	//This is used to define the Schema
 } from 'graphql';
 
-import { // This contains all calls to DynamoDB
-	getDataList,
-	// getDataListById,
-	// getDataById,
-	// getBatchUsers,
-	// getBatchStudents,
-	// getBatchTeachers,
-	// getBatchCourses,
-	// getBatchCourseGroups,
-	// getBatchSessions,
-	// getBatchPayments,
+import { // This contains all calls to be made to DynamoDB
+	getDataList, //TODO: Get Caching working on Data List
 	getBatchData
 } from './dynamodb';
 
@@ -29,16 +20,6 @@ import {
 } from './fakeData';
 
 // Faked Data can be imported from 'fakeData.js'
-
-var DataLoader = require('dataloader');
-
-// var userLoader = new DataLoader(keys => getBatchUsers(keys));
-// var studentLoader = new DataLoader(keys => getBatchStudents(keys));
-// var teacherLoader = new DataLoader(keys => getBatchTeachers(keys));
-// var courseLoader = new DataLoader(keys => getBatchCourses(keys));
-// var courseGroupLoader = new DataLoader(keys => getBatchCourseGroups(keys));
-// var sessionLoader = new DataLoader(keys => getBatchSessions(keys));
-// var paymentLoader = new DataLoader(keys => getBatchPayments(keys));
 
 //**************Object Definitions********************
 
