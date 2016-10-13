@@ -3,6 +3,7 @@
 import Promise from 'bluebird'; //Promise Support for resolves
 import AWS from 'aws-sdk'; //AWS DynamoDB Integration
 //Reference: https://github.com/serverless/serverless-graphql-blog/blob/master/blog/lib/dynamo.js
+require('dotenv').config(); //Keep Variables Out of Code
 
 // Configure DynamoDB Credentials
 const dynamoConfig = {
