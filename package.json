@@ -17,6 +17,7 @@
     "aws-sdk": "^2.6.6",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
     "dataloader": "^1.2.0",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",

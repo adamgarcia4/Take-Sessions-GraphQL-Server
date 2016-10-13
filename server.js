@@ -16,6 +16,9 @@ import Schema from './schema';
 const PORT = 3000; //Defines port number to serve application to
 var app = express(); //Initialize Express Application
 
+var cors = require('cors');
+app.use(cors());
+
 //**************Express Routes***************
 app.use( //This route serves the graphql server
   '/graphql',
