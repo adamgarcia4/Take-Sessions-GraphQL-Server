@@ -56,15 +56,17 @@ var getListLookup = {
 };
 
 export function getBatchData(modelName, idList) {
-	console.log('inside getbatchData');
+	console.log('inside getbatchData', idList);
 
-	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient 
+	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
+			console.log('single', idList);
 			return getListLookup[modelName].loader.load(idList);
 	} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
 		var iterArr = [];
 		for (var i = 0; i < idList.length; i++) {
 			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
 		}
+		console.log('multiple', iterArr);
 		// Returns a promise that resolves once all of the individual promises in the array is resolved.
 		return Promise.all(iterArr);
 	}
@@ -99,7 +101,12 @@ export function getFromDatabase(modelName, id) {
 				return reject(err);
 			}
 			console.log('data', data["Responses"][table]);
-			return resolve(data["Responses"][table]);
+			if(data["Responses"][table].length == 0) {
+				// Even if no results, DataLoader needs to return a promise for an Array of Same Length as input
+				return resolve(Array.apply(null, Array(id.length).map(Number.prototype.valueOf,null)));
+			} else {
+				return resolve(data["Responses"][table]);
+			}
 		});
 	})
 }

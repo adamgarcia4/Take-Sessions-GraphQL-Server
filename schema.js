@@ -49,7 +49,7 @@ const Student = new GraphQLObjectType({
 	description: 'This represents a Student Account',
 	fields: () => ({
 		_id: { type: GraphQLString },
-		name: {type: GraphQLString },
+		name: { type: GraphQLString },
 		user: {
 			type: User,
 			resolve: function (student) {
@@ -193,6 +193,18 @@ const Query = new GraphQLObjectType({
 	name: 'BlogSchema',
 	description: 'Root of the Blog Schema',
 	fields: () => ({
+		user: {
+			type: User,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('User', id);
+			}
+		},
 		users: {
 			type: new GraphQLList(User),
 			resolve: function () {
@@ -200,10 +212,34 @@ const Query = new GraphQLObjectType({
 				return getDataList('User');
 			}
 		},
+		student: {
+			type: Student,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('Student', id);
+			}
+		},
 		students: {
 			type: new GraphQLList(Student),
 			resolve: function () {
 				return getDataList('Student');
+			}
+		},
+		teacher: {
+			type: Teacher,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('Teacher', id);
 			}
 		},
 		teachers: {
@@ -213,6 +249,18 @@ const Query = new GraphQLObjectType({
 				return getDataList('Teacher');
 			}
 		},
+		course: {
+			type: Course,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('Course', id);
+			}
+		},
 		courses: {
 			type: new GraphQLList(Course),
 			resolve: function () {
@@ -220,15 +268,51 @@ const Query = new GraphQLObjectType({
 			}
 		},
 		courseGroup: {
+			type: CourseGroup,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('CourseGroup', id);
+			}
+		},
+		courseGroups: {
 			type: new GraphQLList(CourseGroup),
 			resolve: function () {
 				return getDataList('CourseGroup');
+			}
+		},
+		session: {
+			type: Session,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('Session', id);
 			}
 		},
 		sessions: {
 			type: new GraphQLList(Session),
 			resolve: function () {
 				return getDataList('Session');
+			}
+		},
+		payment: {
+			type: Payment,
+			args: {
+				id: {
+					name: 'id',
+					type: new GraphQLNonNull(GraphQLString)
+				}
+			},
+			resolve: function (root, {id}, source) {
+				return getBatchData('Payment', id);
 			}
 		},
 		payments: {
