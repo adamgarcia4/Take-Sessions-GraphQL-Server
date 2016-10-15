@@ -6,12 +6,14 @@ import {
 	GraphQLList,
 	GraphQLObjectType,
 	GraphQLNonNull, //This is used to create required fields and arguments
-	GraphQLSchema 	//This is used to define the Schema
+	GraphQLSchema, 	//This is used to define the Schema
+	GraphQLInputObjectType
 } from 'graphql';
 
 import { // This contains all calls to be made to DynamoDB
 	getDataList, //TODO: Get Caching working on Data List
-	getBatchData
+	getBatchData,
+	putData
 } from './dynamodb';
 
 import {
@@ -324,13 +326,41 @@ const Query = new GraphQLObjectType({
 	})
 });
 
+const UserInputType = new GraphQLInputObjectType({
+	name: 'UserInput',
+	fields: () => ({
+		_id: {type: new GraphQLNonNull(GraphQLString)},
+		name: { type: new GraphQLNonNull(GraphQLString) },
+		// student: { type: new GraphQLNonNull(Student) },
+		// teacher: { type: new GraphQLNonNull(Teacher) }
+	})
+});
+
+const UserMutations = new GraphQLObjectType({
+	name: 'UserMutations',
+	description: 'User Mutations',
+	fields: () => ({
+		createUser: {
+			type: User,
+			description: 'Create New User.',
+			args: {
+				user: { type: UserInputType }
+			},
+			resolve: (root, { user }) => {
+				return putData('User', user);
+			}
+		}
+	})
+});
+
 //**************Root Mutation Definition********************
 
 //TODO: Add Mutation
 
 //**************Schema Composition********************
 const Schema = new GraphQLSchema({
-	query: Query
+	query: Query,
+	mutation: UserMutations
     // Query
 });
 
