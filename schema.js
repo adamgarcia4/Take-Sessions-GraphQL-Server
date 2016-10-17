@@ -13,7 +13,8 @@ import {
 import { // This contains all calls to be made to DynamoDB
 	getDataList, //TODO: Get Caching working on Data List
 	getBatchData,
-	putData
+	putData,
+	updateData
 } from './dynamodb';
 
 import {
@@ -30,7 +31,13 @@ const User = new GraphQLObjectType({
 	description: 'This represents a single User',
 	fields: () => ({
 		_id: { type: new GraphQLNonNull(GraphQLString) },
-		name: { type: GraphQLString },
+		firstName: { type: GraphQLString },
+		lastName: { type: GraphQLString },
+		birthday: { type: GraphQLString },
+		email: { type: GraphQLString },
+		avatar: { type: GraphQLString },
+		phoneNumber: { type: GraphQLString },
+		location: { type: GraphQLString },
 		student: {
 			type: Student,
 			resolve: function (user) {
@@ -43,6 +50,38 @@ const User = new GraphQLObjectType({
 				return getBatchData('Teacher', user.teacherID);
 			}
 		}
+	})
+});
+
+const UserInputType = new GraphQLInputObjectType({
+	name: 'UserInput',
+	fields: () => ({
+		_id: { type: new GraphQLNonNull(GraphQLString) },
+		firstName: { type: new GraphQLNonNull(GraphQLString) },
+		lastName: { type: new GraphQLNonNull(GraphQLString) },
+		birthday: { type: new GraphQLNonNull(GraphQLString) },
+		email: { type: new GraphQLNonNull(GraphQLString) },
+		avatar: { type: new GraphQLNonNull(GraphQLString) },
+		phoneNumber: { type: new GraphQLNonNull(GraphQLString) },
+		location: { type: new GraphQLNonNull(GraphQLString) },
+		studentID: { type: GraphQLString },
+		teacherID: { type: GraphQLString }
+	})
+});
+
+const UserAttributesInputType = new GraphQLInputObjectType({
+	name: 'UserAttributes',
+	fields: () => ({
+		_id: { type: new GraphQLNonNull(GraphQLString) },
+		firstName: { type: GraphQLString },
+		lastName: { type: GraphQLString },
+		birthday: { type: GraphQLString },
+		email: { type: GraphQLString },
+		avatar: { type: GraphQLString },
+		phoneNumber: { type: GraphQLString },
+		location: { type: GraphQLString },
+		studentID: { type: GraphQLString },
+		teacherID: { type: GraphQLString }
 	})
 });
 
@@ -66,6 +105,14 @@ const Student = new GraphQLObjectType({
 		}
 	})
 });
+
+const StudentAttributesInputType = new GraphQLInputObjectType({
+	name: 'UserAttributes',
+	fields: () => ({
+		_id: { type: GraphQLString },
+		name: { type: GraphQLString }
+	})
+})
 
 const Teacher = new GraphQLObjectType({
 	name: 'Teacher',
@@ -119,6 +166,23 @@ const Course = new GraphQLObjectType({
 				return getBatchData('CourseGroup', course.courseGroupID);
 			}
 		}
+	})
+});
+
+const CourseInputType = new GraphQLInputObjectType({
+	name: 'CourseInput',
+	fields: () => ({
+		_id: { type: new GraphQLNonNull(GraphQLString) },
+		name: { type: new GraphQLNonNull(GraphQLString) },
+		genre: { type: new GraphQLNonNull(GraphQLString) },
+		pic: { type: new GraphQLNonNull(GraphQLString) },
+		price: { type: new GraphQLNonNull(GraphQLString) },
+		calendarID: { type: new GraphQLNonNull(GraphQLString) },
+		bio: { type: new GraphQLNonNull(GraphQLString) },
+		location: { type: new GraphQLNonNull(GraphQLString) },
+		material: { type: GraphQLString },
+		teacherID: { type: new GraphQLList( GraphQLString ) },
+		
 	})
 });
 
@@ -326,19 +390,9 @@ const Query = new GraphQLObjectType({
 	})
 });
 
-const UserInputType = new GraphQLInputObjectType({
-	name: 'UserInput',
-	fields: () => ({
-		_id: {type: new GraphQLNonNull(GraphQLString)},
-		name: { type: new GraphQLNonNull(GraphQLString) },
-		// student: { type: new GraphQLNonNull(Student) },
-		// teacher: { type: new GraphQLNonNull(Teacher) }
-	})
-});
-
-const UserMutations = new GraphQLObjectType({
-	name: 'UserMutations',
-	description: 'User Mutations',
+const Mutation = new GraphQLObjectType({
+	name: 'Mutations',
+	description: 'List of all Mutations',
 	fields: () => ({
 		createUser: {
 			type: User,
@@ -349,9 +403,32 @@ const UserMutations = new GraphQLObjectType({
 			resolve: (root, { user }) => {
 				return putData('User', user);
 			}
+		},
+		updateUser: {
+			type: User,
+			description: 'Update User',
+			args: {
+				user: { type: UserAttributesInputType }
+			},
+			resolve: (root, { user }) => {
+				console.log('user is: ', user);
+				return updateData('User', user);
+			}
+		},
+		createCourse: {
+			type: Course,
+			description: 'Create New Course.',
+			args: {
+				course: { type: CourseInputType }
+			},
+			resolve: (root, { course }) => {
+				return putData('Course', course);
+			}
 		}
 	})
 });
+
+
 
 //**************Root Mutation Definition********************
 
@@ -360,7 +437,7 @@ const UserMutations = new GraphQLObjectType({
 //**************Schema Composition********************
 const Schema = new GraphQLSchema({
 	query: Query,
-	mutation: UserMutations
+	mutation: Mutation
     // Query
 });
 

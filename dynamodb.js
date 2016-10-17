@@ -67,7 +67,8 @@ export function getBatchData(modelName, idList) {
 		for (var i = 0; i < idList.length; i++) {
 			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
 		}
-		console.log('multiple', iterArr);
+		// console.log('multiple', iterArr);
+		console.log('multiple');
 		// Returns a promise that resolves once all of the individual promises in the array is resolved.
 		return Promise.all(iterArr);
 	}
@@ -139,9 +140,7 @@ export function putData(tableName, data) {
 		console.log('Put Data into Database.');
 		var params = {
 			TableName: getListLookup[tableName].table,
-			Item: {
-
-			}
+			Item: { }
 		};
 
 		for (var i = 0; i < keys.length; i++) {
@@ -162,3 +161,74 @@ export function putData(tableName, data) {
 		});
 	});
 }
+
+export function updateData(tableName, data) {
+	console.log('data', data);
+	return new Promise(function (resolve, reject) {
+		if (!(tableName in getListLookup)) {
+			return reject(new Error("Invalid Table Name" + tableName));
+		}
+		var keys = Object.keys(data);
+		console.log('Put Data into Database.');
+		
+		
+		var params = {
+			TableName: getListLookup[tableName].table,
+			Key: {
+				_id: data["_id"]
+			},
+			
+		};
+
+		
+
+		for (var i = 0; i < keys.length; i++) {
+			params.Key[keys[i]] = data[keys[i]];
+		}
+
+		console.log('params item', params);
+		docClient.update(params, function (err, data) {
+			if (err) {
+				console.log('err', err);
+				return reject(err);
+			} else {
+				getListLookup[tableName].loader.clear(params.Item._id);
+				console.log('data', data);
+				return resolve(params.Item);
+			}
+
+		});
+	});
+}
+
+// export function updateData(tableName, data) {
+// 	return new Promise(function (resolve, reject) {
+// 		console.log('we in');
+// 		if (!(tableName in getListLookup)) {
+// 			return reject(new Error("Invalid Table Name" + tableName));
+// 		}
+// 		var keys = Object.keys(data);
+// 		console.log('Update Data into Database.');
+// 		var params = {
+// 			TableName: getListLookup[tableName].table,
+// 			Key: { }
+// 		};
+
+// 		for (var i = 0; i < keys.length; i++) {
+// 			params.Key[keys[i]] = data[keys[i]];
+// 		}
+
+// 		console.log('params item', params);
+// 		docClient.update(params, function (err, data) {
+// 			if (err) {
+// 				console.log('err', err);
+// 				return reject(err);
+// 			} else {
+// 				getListLookup[tableName].loader.clear(params.Item._id);
+// 				console.log('data', data);
+// 				return resolve(params.Item);
+// 			}
+
+// 		});
+// 	});
+// }
