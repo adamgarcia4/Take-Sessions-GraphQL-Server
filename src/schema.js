@@ -182,7 +182,7 @@ const CourseInputType = new GraphQLInputObjectType({
 		location: { type: new GraphQLNonNull(GraphQLString) },
 		material: { type: GraphQLString },
 		teacherID: { type: new GraphQLList( GraphQLString ) },
-		
+		courseGroupID: { type: new GraphQLList( GraphQLString )}
 	})
 });
 
