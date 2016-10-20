@@ -18,6 +18,10 @@ import { // This contains all calls to be made to DynamoDB
 } from './dynamodb';
 
 import {
+	createCourse
+} from './course'
+
+import {
 	coursesList,
 	teachersList
 } from './fakeData';
@@ -199,15 +203,15 @@ const Course = new GraphQLObjectType({
 const CourseInputType = new GraphQLInputObjectType({
 	name: 'CourseInput',
 	fields: () => ({
-		_id: { type: new GraphQLNonNull(GraphQLString) },
+		// _id: { type: new GraphQLNonNull(GraphQLString) },
 		name: { type: new GraphQLNonNull(GraphQLString) },
 		genre: { type: new GraphQLNonNull(GraphQLString) },
-		pic: { type: new GraphQLNonNull(GraphQLString) },
+		// pic: { type: new GraphQLNonNull(GraphQLString) },
 		price: { type: new GraphQLNonNull(GraphQLString) },
-		calendarID: { type: new GraphQLNonNull(GraphQLString) },
+		// calendarID: { type: new GraphQLNonNull(GraphQLString) },
 		bio: { type: new GraphQLNonNull(GraphQLString) },
-		location: { type: new GraphQLNonNull(GraphQLString) },
-		material: { type: GraphQLString },
+		// location: { type: new GraphQLNonNull(GraphQLString) },
+		material: { type: new GraphQLNonNull(GraphQLString) },
 		teacherID: { type: new GraphQLList( GraphQLString ) },
 		courseGroupID: { type: new GraphQLList( GraphQLString )}
 	})
@@ -510,7 +514,8 @@ const Mutation = new GraphQLObjectType({
 				course: { type: CourseInputType }
 			},
 			resolve: (root, { course }) => {
-				return putData('Course', course);
+				return createCourse(course);
+				// return putData('Course', course);
 			}
 		},		
 	})
