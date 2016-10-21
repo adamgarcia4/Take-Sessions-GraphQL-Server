@@ -12,6 +12,7 @@ import {
 
 //**************Schema Imports***************
 import Schema from './schema';
+import executableSchema from './schema'
 
 const PORT = 3000; //Defines port number to serve application to
 var app = express(); //Initialize Express Application
@@ -42,7 +43,8 @@ app.use('/graphql', apolloExpress((req) => {
   //TODO: Add user validation checking
   console.log('working start!');
   return {
-    schema: Schema
+    // schema: Schema
+    schema: executableSchema
   }
 
 }))
