@@ -22,7 +22,7 @@ import {
 } from './course'
 
 import {
-	schema as courseSchema
+	Course
 } from './course/schema';
 
 import { makeExecutableSchema } from 'graphql-tools';
@@ -33,18 +33,6 @@ import { makeExecutableSchema } from 'graphql-tools';
 //**************Object Definitions********************
 
 const schema = `
-type Course {
-	_id: String!
-	name: String
-	genre: String
-	pic: String
-	price: Int
-	calendarID: String
-	bio: String
-	location: String
-	material: String
-}
-
 type Query {
 	courses: [Course]
 }
@@ -57,9 +45,10 @@ const rootResolvers = {
 		}
 	}
 }
+console.log('typedef', [schema, Course]);
 
 export default makeExecutableSchema({
-	typeDefs: schema,
+	typeDefs: [schema, Course],
 	resolvers: rootResolvers,
 })
 

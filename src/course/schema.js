@@ -1,6 +1,6 @@
 
 // This is the Schema for the Course
-export const schema = [`
+export const Course = `
     type Course {
         _id: String!
         name: String
@@ -12,7 +12,9 @@ export const schema = [`
         location: String
         material: String
     }
-`];
+`;
+
+// export default () => [Course]; //Need to export all dependencies to keep it modular
 
 // const Course = new GraphQLObjectType({
 // 	name: 'Course',
