@@ -10,19 +10,7 @@ import {
 	GraphQLInputObjectType
 } from 'graphql';
 
-import { merge } from 'lodash';
-
-// import { // This contains all calls to be made to DynamoDB
-// 	getDataList, //TODO: Get Caching working on Data List
-// 	getBatchData,
-// 	putData,
-// 	updateData
-// } from './dynamodb';
-
-import {
-	createCourse
-} from './course'
-
+//**************Model/Resolver Imports***************
 import {
 	Course, resolvers as courseResolvers
 } from './course/schema';
@@ -35,12 +23,16 @@ import {
 	CourseGroup
 } from './courseGroup/schema';
 
+
+// import {
+// 	createCourse
+// } from './course'
+
+//**************GraphQL-Tool Imports***************
+import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
 
-
-// Faked Data can be imported from 'fakeData.js'
-
-//**************Object Definitions********************
+//**************Root Object Definitions********************
 
 const schema = `
 type Query {
@@ -57,8 +49,11 @@ const rootResolvers = {
 }
 // console.log('typedef', [schema, Course]);
 
+//**************Combined Resolver Definition********************
 const resolvers = merge(rootResolvers, courseResolvers);
 
+
+//**************Create Root Schema********************
 export default makeExecutableSchema({
 	typeDefs: [schema, Course, Teacher, CourseGroup],
 	resolvers: resolvers,

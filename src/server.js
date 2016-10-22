@@ -2,41 +2,75 @@
 
 // Uses import/export ES6 Module Notation
 
-require('dotenv').config(); //Keep Config Variables out of code
-import express from 'express'; //HTTP Handling
-import bodyParser from 'body-parser'; //Parse Incoming request bodies
+//Keep Config Variables out of code
+require('dotenv').config();
+
+//HTTP Handling
+import express from 'express';
+
+//Parse Incoming request bodies
+import bodyParser from 'body-parser';
+
+
+// Import Apollo Server related Modules 
 import {
-  apolloExpress, //Barebones Apollo Server
-  graphiqlExpress //Graphiql Interface
+  //Barebones Apollo Server
+  apolloExpress,
+
+  //Graphiql Interface
+  graphiqlExpress
+
 } from 'apollo-server';
 
+
 //**************Schema Imports***************
+
 import Schema from './schema';
 import executableSchema from './schema';
 
+
+//**************Database Connector Imports***************
+
 import { DynamoDBConnector } from './dynamodb';
+
+
+//**************Model Imports***************
 
 import { Course } from './course/models';
 import { Teacher } from './teacher/models';
 import { CourseGroup } from './courseGroup/models';
 
-const PORT = 3000; //Defines port number to serve application to
-var app = express(); //Initialize Express Application
 
+//Defines port number to serve application to
+const PORT = 3000;
+
+ //Initialize Express Application
+var app = express();
+
+
+//**************Express Middleware***************
+
+// CORS Middleware to support Cross Origin Requests
 var cors = require('cors');
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: true })); //TODO: Comment
-app.use(bodyParser.json()); //TODO: Comment
+//Body Parser Middleware populates URL encoded strings into req.body 
+app.use(bodyParser.urlencoded({ extended: true }));
+
+//Body Parser Middleware accepts JSON and makes it accesible to req.body
+app.use(bodyParser.json());
+
 
 //**************Express Routes***************
 
-
+// Route to parse requests from Clients
 app.use('/graphql', apolloExpress((req) => {
 
-  const query = req.query.query || req.body.query; // This is how express-graphql gets query.  https://github.com/graphql/express-graphql/blob/3fa6e68582d6d933d37fa9e841da5d2aa39261cd/src/index.js#L257
+  // This is how express-graphql gets query.  https://github.com/graphql/express-graphql/blob/3fa6e68582d6d933d37fa9e841da5d2aa39261cd/src/index.js#L257
+  const query = req.query.query || req.body.query;
+
+  // Attempt to provide errors from harmful requests
   if (query && query.length > 2000) {
-    //No queries are going to be this long.
     throw new Error('Query too large.');
   }
 
@@ -44,11 +78,15 @@ app.use('/graphql', apolloExpress((req) => {
   const dynamoDBConnector = new DynamoDBConnector(); //TODO: Does this circumvent caching because it will create new instances of DynamoDB per request?
 
   //TODO: Add user validation checking
+  
   console.log('working start!');
+  
+  //Return the Schema and Context to the Apollo Client for use inside of body of request
   return {
-    // schema: Schema
     schema: executableSchema,
-    context: { //Pass in all models to be used anywhere along the resolve tree.  Passed to resolve on compile time.
+
+    //Pass in all models to be used anywhere along the resolve tree.  Passed to resolve on compile time.
+    context: { 
       Course: new Course({ connector: dynamoDBConnector }),
       Teacher: new Teacher({ connector: dynamoDBConnector }),
       CourseGroup: new CourseGroup({ connector: dynamoDBConnector }),
@@ -57,7 +95,8 @@ app.use('/graphql', apolloExpress((req) => {
 
 }));
 
-app.use( //This route serves the Graphiql interface
+// Route to accept graphiQL queries
+app.use(
   '/graphiql',
   graphiqlExpress({
     endpointURL: '/graphql',
