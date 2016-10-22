@@ -1,5 +1,8 @@
 
 // This is the Schema for the Course
+
+import Teacher from '../teacher/schema';
+
 export const Course = `
     type Course {
         _id: String!
@@ -15,6 +18,18 @@ export const Course = `
         # courseGroup: [CourseGroup]
     }
 `;
+
+export const resolvers = {
+    Course: {
+        teacher({ }, _, context) {
+            return context.Teacher.getTeacherList();
+        }
+    }
+}
+
+
+
+// export default () => [Course, Teacher];
 
 // export default () => [Course]; //Need to export all dependencies to keep it modular
 

@@ -10,6 +10,8 @@ import {
 	GraphQLInputObjectType
 } from 'graphql';
 
+import { merge } from 'lodash';
+
 import { // This contains all calls to be made to DynamoDB
 	getDataList, //TODO: Get Caching working on Data List
 	getBatchData,
@@ -22,7 +24,7 @@ import {
 } from './course'
 
 import {
-	Course
+	Course, resolvers as courseResolvers
 } from './course/schema';
 
 import { makeExecutableSchema } from 'graphql-tools';
@@ -48,9 +50,11 @@ const rootResolvers = {
 }
 console.log('typedef', [schema, Course]);
 
+const resolvers = merge(rootResolvers, courseResolvers);
+
 export default makeExecutableSchema({
 	typeDefs: [schema, Course],
-	resolvers: rootResolvers,
+	resolvers: resolvers,
 })
 
 // const rootResolvers = {

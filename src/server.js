@@ -17,6 +17,7 @@ import executableSchema from './schema';
 import { DynamoDBConnector } from './dynamodb';
 
 import { Course } from './course/models';
+import { Teacher } from './teacher/models';
 
 const PORT = 3000; //Defines port number to serve application to
 var app = express(); //Initialize Express Application
@@ -39,7 +40,7 @@ app.use('/graphql', apolloExpress((req) => {
   }
 
   //Create new instance of the dynamodb connector 
-  const dynamoDBConnector = new DynamoDBConnector();
+  const dynamoDBConnector = new DynamoDBConnector(); //TODO: Does this circumvent caching because it will create new instances of DynamoDB per request?
 
   //TODO: Add user validation checking
   console.log('working start!');
@@ -48,6 +49,7 @@ app.use('/graphql', apolloExpress((req) => {
     schema: executableSchema,
     context: { //Pass in all models to be used anywhere along the resolve tree.  Passed to resolve on compile time.
       Course: new Course({ connector: dynamoDBConnector }),
+      Teacher: new Teacher({ connector: dynamoDBConnector }),
     },
   };
 

@@ -1,14 +1,14 @@
 
 
 
-export class Course {
+export class Teacher {
     constructor({ connector }) {
         this.connector = connector;
     }
 
-    getCourseList() {
+    getTeacherList() {
         //Add any validation here
         
-        return this.connector.getDataList('Course');
+        return this.connector.getDataList('Teacher');
     }
 }
