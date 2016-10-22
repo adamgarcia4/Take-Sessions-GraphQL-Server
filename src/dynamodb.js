@@ -60,7 +60,7 @@ export class DynamoDBConnector {
 	constructor() {
 
 	}
-
+	//TODO: implement using dataloader cache
 	getDataList(tableName) {
 		return new Promise(function (resolve, reject) {
 			if (!(tableName in getListLookup)) {
@@ -81,6 +81,7 @@ export class DynamoDBConnector {
 	getBatchData(modelName, idList) {
 		console.log('inside getbatchData', idList);
 
+		//TODO: add testcase for if idList is null.  Just return right away.  It still works without, but returns unneeded errors.
 		if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
 			console.log('single', idList);
 			return getListLookup[modelName].loader.load(idList);
@@ -124,7 +125,7 @@ export function getFromDatabase(modelName, id) {
 			return reject(new Error("Invalid Table Name"));
 		}
 		var table = getListLookup[modelName].table;
-		console.log('getting from', table);
+		console.log('getting from', table); //Logs to know when we are fetching from database
 		// Build up Params List
 		var RequestItems = {};
 		RequestItems[table] = {
