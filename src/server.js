@@ -12,7 +12,11 @@ import {
 
 //**************Schema Imports***************
 import Schema from './schema';
-import executableSchema from './schema'
+import executableSchema from './schema';
+
+import { DynamoDBConnector } from './dynamodb';
+
+import { Course } from './course/models';
 
 const PORT = 3000; //Defines port number to serve application to
 var app = express(); //Initialize Express Application
@@ -24,13 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true })); //TODO: Comment
 app.use(bodyParser.json()); //TODO: Comment
 
 //**************Express Routes***************
-// app.use( //This route serves the graphql server
-//   '/graphql',
-//   bodyParser.json(),
-//   apolloExpress({
-//     schema: Schema
-//   })
-// );
+
 
 app.use('/graphql', apolloExpress((req) => {
 
@@ -40,14 +38,20 @@ app.use('/graphql', apolloExpress((req) => {
     throw new Error('Query too large.');
   }
 
+  //Create new instance of the dynamodb connector 
+  const dynamoDBConnector = new DynamoDBConnector();
+
   //TODO: Add user validation checking
   console.log('working start!');
   return {
     // schema: Schema
-    schema: executableSchema
-  }
+    schema: executableSchema,
+    context: { //Pass in all models to be used anywhere along the resolve tree.  Passed to resolve on compile time.
+      Course: new Course({ connector: dynamoDBConnector }),
+    },
+  };
 
-}))
+}));
 
 app.use( //This route serves the Graphiql interface
   '/graphiql',

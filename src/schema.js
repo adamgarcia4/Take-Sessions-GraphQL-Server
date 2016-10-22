@@ -40,8 +40,9 @@ type Query {
 
 const rootResolvers = {
 	Query: {
-		courses() {
-			return getDataList('Course');
+		courses(root, {}, context) {
+			// return getDataList('Course');
+			return context.Course.getCourseList();
 		}
 	}
 }

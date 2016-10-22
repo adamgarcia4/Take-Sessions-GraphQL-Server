@@ -56,6 +56,29 @@ var getListLookup = {
 	}
 };
 
+export class DynamoDBConnector {
+	constructor() {
+
+	}
+
+	getDataList(tableName) {
+		return new Promise(function (resolve, reject) {
+			if (!(tableName in getListLookup)) {
+				return reject(new Error("Invalid Table Name" + tableName));
+			}
+			console.log('querying database!');
+			var params = {
+				TableName: getListLookup[tableName].table
+			};
+			docClient.scan(params, function (err, data) {
+				if (err) return reject(err);
+				console.log(data);
+				return resolve(data["Items"]);
+			});
+		})
+	}
+}
+
 export function getBatchData(modelName, idList) {
 	console.log('inside getbatchData', idList);
 
@@ -114,22 +137,22 @@ export function getFromDatabase(modelName, id) {
 }
 
 // Get List from Database | TODO: Enable Caching on this
-export function getDataList(tableName) {
-	return new Promise(function (resolve, reject) {
-		if (!(tableName in getListLookup)) {
-			return reject(new Error("Invalid Table Name" + tableName));
-		}
-		console.log('querying database!');
-		var params = {
-			TableName: getListLookup[tableName].table
-		};
-		docClient.scan(params, function (err, data) {
-			if (err) return reject(err);
-			console.log(data);
-			return resolve(data["Items"]);
-		});
-	})
-}
+// export function getDataList(tableName) {
+// 	return new Promise(function (resolve, reject) {
+// 		if (!(tableName in getListLookup)) {
+// 			return reject(new Error("Invalid Table Name" + tableName));
+// 		}
+// 		console.log('querying database!');
+// 		var params = {
+// 			TableName: getListLookup[tableName].table
+// 		};
+// 		docClient.scan(params, function (err, data) {
+// 			if (err) return reject(err);
+// 			console.log(data);
+// 			return resolve(data["Items"]);
+// 		});
+// 	})
+// }
 
 export function putData(tableName, data) {
 	return new Promise(function (resolve, reject) {
@@ -140,7 +163,7 @@ export function putData(tableName, data) {
 		console.log('Put Data into Database.');
 		var params = {
 			TableName: getListLookup[tableName].table,
-			Item: { }
+			Item: {}
 		};
 
 		for (var i = 0; i < keys.length; i++) {
@@ -170,17 +193,17 @@ export function updateData(tableName, data) {
 		}
 		var keys = Object.keys(data);
 		console.log('Put Data into Database.');
-		
-		
+
+
 		var params = {
 			TableName: getListLookup[tableName].table,
 			Key: {
 				_id: data["_id"]
 			},
-			
+
 		};
 
-		
+
 
 		for (var i = 0; i < keys.length; i++) {
 			params.Key[keys[i]] = data[keys[i]];
