@@ -81,7 +81,10 @@ export class DynamoDBConnector {
 	getBatchData(modelName, idList) {
 		console.log('inside getbatchData', idList);
 
-		//TODO: add testcase for if idList is null.  Just return right away.  It still works without, but returns unneeded errors.
+		//If idList is null (ie: no id list defined in model calling this, just return a resolved promise of null.
+		if ( typeof idList == "undefined") {
+			return Promise.resolve(null);
+		}
 		if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
 			console.log('single', idList);
 			return getListLookup[modelName].loader.load(idList);

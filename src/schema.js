@@ -12,12 +12,12 @@ import {
 
 import { merge } from 'lodash';
 
-import { // This contains all calls to be made to DynamoDB
-	getDataList, //TODO: Get Caching working on Data List
-	getBatchData,
-	putData,
-	updateData
-} from './dynamodb';
+// import { // This contains all calls to be made to DynamoDB
+// 	getDataList, //TODO: Get Caching working on Data List
+// 	getBatchData,
+// 	putData,
+// 	updateData
+// } from './dynamodb';
 
 import {
 	createCourse
@@ -30,6 +30,10 @@ import {
 import {
 	Teacher
 } from './teacher/schema';
+
+import {
+	CourseGroup
+} from './courseGroup/schema';
 
 import { makeExecutableSchema } from 'graphql-tools';
 
@@ -46,34 +50,16 @@ type Query {
 
 const rootResolvers = {
 	Query: {
-		courses(root, {}, context) {
-			// return getDataList('Course');
+		courses(root, { }, context) {
 			return context.Course.getCourseList();
 		}
 	}
 }
-console.log('typedef', [schema, Course]);
+// console.log('typedef', [schema, Course]);
 
 const resolvers = merge(rootResolvers, courseResolvers);
 
 export default makeExecutableSchema({
-	typeDefs: [schema, Course, Teacher],
+	typeDefs: [schema, Course, Teacher, CourseGroup],
 	resolvers: resolvers,
 })
-
-// const rootResolvers = {
-// 	Query: {
-// 		courses() {
-// 			return getDataList('Course');
-// 		}
-// 	}
-// }
-
-// // const schema = [...rootSchema, ...courseSchema];
-// const resolvers = rootResolvers;
-
-// const executableSchema = makeExecutableSchema({
-// 	typeDefs: [rootSchema, rootQuery],
-// 	resolvers,
-// });
-// export default executableSchema;

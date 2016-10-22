@@ -15,15 +15,18 @@ export const Course = `
         location: String
         material: String
         teacher: [Teacher]
-        # courseGroup: [CourseGroup]
+        courseGroup: [CourseGroup]
     }
 `;
 
 export const resolvers = {
     Course: {
-        teacher(root, {}, context) {
+        teacher(root, { }, context) {
             // console.log('stuff is: ', root);
             return context.Teacher.getTeacherByCourseID(root.teacherID);
+        },
+        courseGroup(root, { }, context) {
+            return context.CourseGroup.getCourseGroupByCourseID(root.courseGroupID);
         }
     }
 }

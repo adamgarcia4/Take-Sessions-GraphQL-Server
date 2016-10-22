@@ -18,6 +18,7 @@ import { DynamoDBConnector } from './dynamodb';
 
 import { Course } from './course/models';
 import { Teacher } from './teacher/models';
+import { CourseGroup } from './courseGroup/models';
 
 const PORT = 3000; //Defines port number to serve application to
 var app = express(); //Initialize Express Application
@@ -50,6 +51,7 @@ app.use('/graphql', apolloExpress((req) => {
     context: { //Pass in all models to be used anywhere along the resolve tree.  Passed to resolve on compile time.
       Course: new Course({ connector: dynamoDBConnector }),
       Teacher: new Teacher({ connector: dynamoDBConnector }),
+      CourseGroup: new CourseGroup({ connector: dynamoDBConnector }),
     },
   };
 
