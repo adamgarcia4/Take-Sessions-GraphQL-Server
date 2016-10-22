@@ -77,25 +77,45 @@ export class DynamoDBConnector {
 			});
 		})
 	}
-}
 
-export function getBatchData(modelName, idList) {
-	console.log('inside getbatchData', idList);
+	getBatchData(modelName, idList) {
+		console.log('inside getbatchData', idList);
 
-	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
-		console.log('single', idList);
-		return getListLookup[modelName].loader.load(idList);
-	} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
-		var iterArr = [];
-		for (var i = 0; i < idList.length; i++) {
-			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
+		if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
+			console.log('single', idList);
+			return getListLookup[modelName].loader.load(idList);
+		} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
+			// console.log('id list: ', idList);
+			var iterArr = [];
+			for (var i = 0; i < idList.length; i++) {
+				// console.log('id is: ', idList[i]);
+				iterArr.push(getListLookup[modelName].loader.load(idList[i]));
+			}
+			// console.log('multiple', iterArr);
+			console.log('multiple');
+			// Returns a promise that resolves once all of the individual promises in the array is resolved.
+			return Promise.all(iterArr);
 		}
-		// console.log('multiple', iterArr);
-		console.log('multiple');
-		// Returns a promise that resolves once all of the individual promises in the array is resolved.
-		return Promise.all(iterArr);
 	}
 }
+
+// export function getBatchData(modelName, idList) {
+// 	console.log('inside getbatchData', idList);
+
+// 	if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
+// 		console.log('single', idList);
+// 		return getListLookup[modelName].loader.load(idList);
+// 	} else { // The ID list is of the form <<_id>>, and as such it needs to be broken into single <_id> calls to data loader
+// 		var iterArr = [];
+// 		for (var i = 0; i < idList.length; i++) {
+// 			iterArr.push(getListLookup[modelName].loader.load(idList[i]));
+// 		}
+// 		// console.log('multiple', iterArr);
+// 		console.log('multiple');
+// 		// Returns a promise that resolves once all of the individual promises in the array is resolved.
+// 		return Promise.all(iterArr);
+// 	}
+// }
 
 // <_id> input --> Promise <val> output
 export function getFromDatabase(modelName, id) {
@@ -104,7 +124,7 @@ export function getFromDatabase(modelName, id) {
 			return reject(new Error("Invalid Table Name"));
 		}
 		var table = getListLookup[modelName].table;
-
+		console.log('getting from', table);
 		// Build up Params List
 		var RequestItems = {};
 		RequestItems[table] = {

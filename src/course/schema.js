@@ -21,8 +21,9 @@ export const Course = `
 
 export const resolvers = {
     Course: {
-        teacher({ }, _, context) {
-            return context.Teacher.getTeacherList();
+        teacher(root, {}, context) {
+            // console.log('stuff is: ', root);
+            return context.Teacher.getTeacherByCourseID(root.teacherID);
         }
     }
 }

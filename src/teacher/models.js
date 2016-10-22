@@ -11,4 +11,8 @@ export class Teacher {
         
         return this.connector.getDataList('Teacher');
     }
+
+    getTeacherByCourseID(courseId) {
+        return this.connector.getBatchData('Teacher', courseId);
+    }
 }
