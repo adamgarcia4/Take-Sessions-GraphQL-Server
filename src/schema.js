@@ -27,6 +27,10 @@ import {
 	Course, resolvers as courseResolvers
 } from './course/schema';
 
+import {
+	Teacher
+} from './teacher/schema';
+
 import { makeExecutableSchema } from 'graphql-tools';
 
 
@@ -53,7 +57,7 @@ console.log('typedef', [schema, Course]);
 const resolvers = merge(rootResolvers, courseResolvers);
 
 export default makeExecutableSchema({
-	typeDefs: [schema, Course],
+	typeDefs: [schema, Course, Teacher],
 	resolvers: resolvers,
 })
 

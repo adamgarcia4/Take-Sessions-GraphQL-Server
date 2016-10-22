@@ -14,7 +14,7 @@ export const Course = `
         bio: String
         location: String
         material: String
-        # teacher: [Teacher]
+        teacher: [Teacher]
         # courseGroup: [CourseGroup]
     }
 `;
