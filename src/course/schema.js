@@ -19,6 +19,21 @@ export const Course = `
     }
 `;
 
+export const CourseInput = `
+    input CourseInput {
+        name: String
+        genre: String
+        pic: String
+        price: Int
+        calendarID: String
+        bio: String
+        location: String
+        material: String
+        teacher: [String]
+        courseGroup: [String]
+    }
+`;
+
 export const resolvers = {
     Course: {
         teacher(root, { }, context) {

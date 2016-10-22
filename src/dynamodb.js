@@ -82,7 +82,7 @@ export class DynamoDBConnector {
 		console.log('inside getbatchData', idList);
 
 		//If idList is null (ie: no id list defined in model calling this, just return a resolved promise of null.
-		if ( typeof idList == "undefined") {
+		if (typeof idList == "undefined") {
 			return Promise.resolve(null);
 		}
 		if (!Array.isArray(idList)) { // If the ID list is of the form <_id>, one call to data loader is sufficient
@@ -100,6 +100,37 @@ export class DynamoDBConnector {
 			// Returns a promise that resolves once all of the individual promises in the array is resolved.
 			return Promise.all(iterArr);
 		}
+	}
+
+	putData(tableName, data) {
+		return new Promise(function (resolve, reject) {
+			if (!(tableName in getListLookup)) {
+				return reject(new Error("Invalid Table Name" + tableName));
+			}
+			var keys = Object.keys(data);
+			console.log('Put Data into Database.');
+			var params = {
+				TableName: getListLookup[tableName].table,
+				Item: {}
+			};
+
+			for (var i = 0; i < keys.length; i++) {
+				params.Item[keys[i]] = data[keys[i]];
+			}
+
+			console.log('params item', params);
+			docClient.put(params, function (err, data) {
+				if (err) {
+					console.log('err', err);
+					return reject(err);
+				} else {
+					getListLookup[tableName].loader.clear(params.Item._id);
+					console.log('data', data);
+					return resolve(params.Item);
+				}
+
+			});
+		});
 	}
 }
 

@@ -12,7 +12,7 @@ import {
 
 //**************Model/Resolver Imports***************
 import {
-	Course, resolvers as courseResolvers
+	Course, CourseInput, resolvers as courseResolvers
 } from './course/schema';
 
 import {
@@ -39,6 +39,15 @@ type Query {
 	courses: [Course]
 	course( _id: String! ): Course
 }
+
+type Mutation {
+	createCourse( course: CourseInput ): Course
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+}
 `;
 
 const rootResolvers = {
@@ -50,6 +59,11 @@ const rootResolvers = {
 			console.log('id is: ', _id);
 			return context.Course.getCourseByID(_id);
 		}
+	},
+	Mutation: {
+		createCourse(root, { course }, context) {
+			return context.Course.createCourse(course);
+		}
 	}
 }
 // console.log('typedef', [schema, Course]);
@@ -60,6 +74,6 @@ const resolvers = merge(rootResolvers, courseResolvers);
 
 //**************Create Root Schema********************
 export default makeExecutableSchema({
-	typeDefs: [schema, Course, Teacher, CourseGroup],
+	typeDefs: [schema, Course, CourseInput, Teacher, CourseGroup],
 	resolvers: resolvers,
 })

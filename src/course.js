@@ -16,4 +16,3 @@ export function createCourse(course) {
         resolve(putData('Course', course));
     });
 }
-
