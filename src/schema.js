@@ -37,6 +37,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 const schema = `
 type Query {
 	courses: [Course]
+	course( _id: String! ): Course
 }
 `;
 
@@ -44,6 +45,10 @@ const rootResolvers = {
 	Query: {
 		courses(root, { }, context) {
 			return context.Course.getCourseList();
+		},
+		course(root, { _id }, context) {
+			console.log('id is: ', _id);
+			return context.Course.getCourseByID(_id);
 		}
 	}
 }
