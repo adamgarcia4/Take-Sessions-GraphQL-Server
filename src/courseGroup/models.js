@@ -6,13 +6,15 @@ export class CourseGroup {
         this.connector = connector;
     }
 
-    getCourseGroupList() {
+    getList() {
         //Add any validation here
         
         return this.connector.getDataList('CourseGroup');
     }
 
-    getCourseGroupByCourseID(courseGroupId) {
+    getById(courseGroupId) {
         return this.connector.getBatchData('CourseGroup', courseGroupId);
     }
+
+    //create
 }

@@ -8,17 +8,17 @@ export class Course {
         this.connector = connector;
     }
 
-    getCourseList() {
+    getList() {
         //Add any validation here
 
         return this.connector.getDataList('Course');
     }
 
-    getCourseByID(_id) {
+    getById(_id) {
         return this.connector.getBatchData('Course', _id);
     }
 
-    createCourse(course) {
+    create(course) {
         //Needed because the promise creates a closure.
         var testThis = this;
 

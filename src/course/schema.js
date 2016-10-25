@@ -38,10 +38,10 @@ export const resolvers = {
     Course: {
         teacher(root, { }, context) {
             // console.log('stuff is: ', root);
-            return context.Teacher.getTeacherByCourseID(root.teacherID);
+            return context.Teacher.getById(root.teacherID);
         },
         courseGroup(root, { }, context) {
-            return context.CourseGroup.getCourseGroupByCourseID(root.courseGroupID);
+            return context.CourseGroup.getById(root.courseGroupID);
         }
     }
 }

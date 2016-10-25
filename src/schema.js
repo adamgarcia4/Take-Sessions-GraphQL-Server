@@ -38,6 +38,8 @@ const schema = `
 type Query {
 	courses: [Course]
 	course( _id: String! ): Course
+	teachers: [Teacher]
+	teacher( _id: String! ): Teacher
 }
 
 type Mutation {
@@ -53,12 +55,20 @@ schema {
 const rootResolvers = {
 	Query: {
 		courses(root, { }, context) {
-			return context.Course.getCourseList();
+			return context.Course.getList();
 		},
 		course(root, { _id }, context) {
 			console.log('id is: ', _id);
-			return context.Course.getCourseByID(_id);
-		}
+			return context.Course.getById(_id);
+		},
+		teachers(root, { }, context) {
+			return context.Teacher.getList();
+		},
+		teacher(root, { _id }, context) {
+			console.log('id is: ', _id);
+			return context.Teacher.getById(_id);
+		},
+
 	},
 	Mutation: {
 		createCourse(root, { course }, context) {

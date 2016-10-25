@@ -72,7 +72,7 @@ export class DynamoDBConnector {
 			};
 			docClient.scan(params, function (err, data) {
 				if (err) return reject(err);
-				console.log(data);
+				//console.log(data);
 				return resolve(data["Items"]);
 			});
 		})
@@ -180,7 +180,8 @@ export function getFromDatabase(modelName, id) {
 				console.log('err is: ', err);
 				return reject(err);
 			}
-			console.log('data', data["Responses"][table]);
+			console.log('Successfully got data from db');
+			//console.log('data', data["Responses"][table]);
 			if (data["Responses"][table].length == 0) {
 				// Even if no results, DataLoader needs to return a promise for an Array of Same Length as input
 				return resolve(Array.apply(null, Array(id.length).map(Number.prototype.valueOf, null)));
