@@ -11,8 +11,8 @@ export const User = `
         avatar: String
         phoneNumber: String
         location: String
-        # student: Student
-        # teacher: Teacher
+        student: Student
+        teacher: Teacher
     }
 `;
 
