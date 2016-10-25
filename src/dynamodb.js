@@ -79,7 +79,7 @@ export class DynamoDBConnector {
 	}
 
 	getBatchData(modelName, idList) {
-		console.log('inside getbatchData', idList);
+		//console.log('inside getbatchData', idList);
 
 		//If idList is null (ie: no id list defined in model calling this, just return a resolved promise of null.
 		if (typeof idList == "undefined") {
@@ -96,7 +96,7 @@ export class DynamoDBConnector {
 				iterArr.push(getListLookup[modelName].loader.load(idList[i]));
 			}
 			// console.log('multiple', iterArr);
-			console.log('multiple');
+			//console.log('multiple');
 			// Returns a promise that resolves once all of the individual promises in the array is resolved.
 			return Promise.all(iterArr);
 		}
