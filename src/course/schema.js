@@ -14,8 +14,8 @@ export const Course = `
         bio: String
         location: String
         material: String
-        teacher: [Teacher]
-        courseGroup: [CourseGroup]
+        teachers: [Teacher]
+        courseGroups: [CourseGroup]
     }
 `;
 
@@ -36,11 +36,11 @@ export const CourseInput = `
 
 export const resolvers = {
     Course: {
-        teacher(root, { }, context) {
+        teachers(root, { }, context) {
             // console.log('stuff is: ', root);
             return context.Teacher.getById(root.teacherID);
         },
-        courseGroup(root, { }, context) {
+        courseGroups(root, { }, context) {
             return context.CourseGroup.getById(root.courseGroupID);
         }
     }

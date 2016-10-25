@@ -6,10 +6,14 @@ export class User {
         this.connector = connector;
     }
 
-    getUserList() {
+    getList() {
         //Add any validation here
-        
+
         return this.connector.getDataList('User');
+    }
+
+    getById(id) {
+        return this.connector.getBatchData('User', id);
     }
 
     // getTeacherByCourseID(courseId) {

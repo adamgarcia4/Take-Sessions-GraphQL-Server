@@ -8,11 +8,22 @@ export const Teacher = `
         bio: String
         numhearts: Int
         musicLinks: [String]
-        # user: User
-        # courses: [Course]
-        # courseGroup: [CourseGroup]
+        courses: [Course]
+        user: User
     }
 `;
+
+export const resolvers = {
+    Teacher: {
+        courses(root, { }, context) {
+            // console.log('stuff is: ', root);
+            return context.Course.getById(root.courseID);
+        },
+        user(root, { }, context) {
+            return context.User.getById(root.userID);
+        }
+    }
+}
 
 
 // const Teacher = new GraphQLObjectType({

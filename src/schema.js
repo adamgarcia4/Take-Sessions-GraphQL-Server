@@ -16,13 +16,16 @@ import {
 } from './course/schema';
 
 import {
-	Teacher
+	Teacher, resolvers as teacherResolvers
 } from './teacher/schema';
 
 import {
 	CourseGroup
 } from './courseGroup/schema';
 
+import {
+	User
+} from './user/schema';
 
 // import {
 // 	createCourse
@@ -79,11 +82,11 @@ const rootResolvers = {
 // console.log('typedef', [schema, Course]);
 
 //**************Combined Resolver Definition********************
-const resolvers = merge(rootResolvers, courseResolvers);
+const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers);
 
 
 //**************Create Root Schema********************
 export default makeExecutableSchema({
-	typeDefs: [schema, Course, CourseInput, Teacher, CourseGroup],
+	typeDefs: [schema, Course, CourseInput, Teacher, User, CourseGroup],
 	resolvers: resolvers,
 })

@@ -35,10 +35,10 @@ export const resolvers = {
     User: {
         student(root, { }, context) {
             // console.log('stuff is: ', root);
-            return context.Student.getStudentByIdList(root.studentID);
+            return context.Student.getById(root.studentID);
         },
         teacher(root, { }, context) {
-            return context.Teacher.getTeacherByIdList(root.teacherID);
+            return context.Teacher.getById(root.teacherID);
         }
     }
 }

@@ -1,0 +1,25 @@
+query {
+  courses {
+    _id
+    name
+    teacher {
+      _id
+    }
+    courseGroup {
+      _id
+    }
+  }
+}
+
+query {
+  teachers {
+    _id
+    courses {
+      _id
+    }
+    user {
+      _id
+    }
+  }
+}
+
