@@ -23,3 +23,15 @@ query {
   }
 }
 
+query {
+  students {
+    _id
+    user {
+      _id
+    }
+    courseGroups {
+      _id
+    }
+  }
+}
+
