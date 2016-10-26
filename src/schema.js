@@ -10,6 +10,10 @@ import {
 	GraphQLInputObjectType
 } from 'graphql';
 
+import {
+	addMockFunctionsToSchema
+} from 'graphql-tools';
+
 //**************Model/Resolver Imports***************
 import {
 	Course, CourseInput, resolvers as courseResolvers
@@ -142,7 +146,11 @@ const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers, studen
 
 
 //**************Create Root Schema********************
-export default makeExecutableSchema({
-	typeDefs: [schema, Course, CourseInput, Teacher, User, CourseGroup, Student, CourseGroup, Session, Payment],
+const finalSchema = makeExecutableSchema({
+	typeDefs: [schema, Course, CourseInput, Teacher, User, CourseGroup, Student, Session, Payment],
 	resolvers: resolvers,
 })
+
+// addMockFunctionsToSchema({ schema: finalSchema });
+
+export default finalSchema;
