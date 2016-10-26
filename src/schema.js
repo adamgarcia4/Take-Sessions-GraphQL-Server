@@ -32,8 +32,12 @@ import {
 } from './student/schema';
 
 import {
-	Session //, resolvers as studentResolvers
+	Session, resolvers as sessionResolvers //, resolvers as studentResolvers
 } from './session/schema';
+
+import {
+	Payment, resolvers as paymentResolvers //, resolvers as studentResolvers
+} from './payment/schema';
 
 // import {
 // 	createCourse
@@ -57,6 +61,10 @@ type Query {
 	student( _id: String! ): Student
 	courseGroups: [CourseGroup]
 	courseGroup( _id: String! ): CourseGroup
+	sessions: [Session]
+	session( _id: String! ): Session
+	payments: [Payment]
+	payment( _id: String! ): Payment
 }
 
 type Mutation {
@@ -106,6 +114,20 @@ const rootResolvers = {
 			console.log('id is: ', _id);
 			return context.CourseGroup.getById(_id);
 		},
+		sessions(root, { }, context) {
+			return context.Session.getList();
+		},
+		session(root, { _id }, context) {
+			console.log('id is: ', _id);
+			return context.Session.getById(_id);
+		},
+		payments(root, { }, context) {
+			return context.Payment.getList();
+		},
+		payment(root, { _id }, context) {
+			console.log('id is: ', _id);
+			return context.Payment.getById(_id);
+		}
 	},
 	Mutation: {
 		createCourse(root, { course }, context) {
@@ -116,11 +138,11 @@ const rootResolvers = {
 // console.log('typedef', [schema, Course]);
 
 //**************Combined Resolver Definition********************
-const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers, studentResolvers, userResolvers, courseGroupResolvers);
+const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers, studentResolvers, userResolvers, courseGroupResolvers, sessionResolvers, paymentResolvers);
 
 
 //**************Create Root Schema********************
 export default makeExecutableSchema({
-	typeDefs: [schema, Course, CourseInput, Teacher, User, CourseGroup, Student, CourseGroup, Session],
+	typeDefs: [schema, Course, CourseInput, Teacher, User, CourseGroup, Student, CourseGroup, Session, Payment],
 	resolvers: resolvers,
 })

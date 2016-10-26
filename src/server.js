@@ -42,6 +42,7 @@ import { CourseGroup } from './courseGroup/models';
 import { User } from './user/models';
 import { Student } from './student/models';
 import { Session } from './session/models';
+import { Payment } from './payment/models';
 
 
 //Defines port number to serve application to
@@ -96,6 +97,7 @@ app.use('/graphql', apolloExpress((req) => {
       User: new User({ connector: dynamoDBConnector }),
       Student: new Student({ connector: dynamoDBConnector }),
       Session: new Session({ connector: dynamoDBConnector }),
+      Payment: new Session({ connector: dynamoDBConnector }),
     },
   };
 

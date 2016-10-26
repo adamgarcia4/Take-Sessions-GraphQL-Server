@@ -35,3 +35,33 @@ query {
   }
 }
 
+query {
+  courseGroups {
+    _id
+    course {
+      _id
+    }
+    students {
+      _id
+    }
+    teachers {
+      _id
+    }
+    sessions {
+      _id
+    }
+  }
+}
+
+query {
+  users {
+    _id
+    student {
+      _id
+    }
+    teacher {
+      _id
+    }
+  }
+}
+
