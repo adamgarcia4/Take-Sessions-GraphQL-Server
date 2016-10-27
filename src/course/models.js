@@ -1,17 +1,19 @@
 
 // Imports
 var uuid = require('node-uuid');
-
+var mongooseSchema = require('../courseModel');
 
 export class Course {
     constructor({ connector }) {
         this.connector = connector;
+        this.connector.setSchema(mongooseSchema);        
     }
 
     getList() {
         //Add any validation here
 
-        return this.connector.getDataList('Course');
+        // return this.connector.getDataList('Course');
+        return this.connector.getList();
     }
 
     getById(_id) {
@@ -20,6 +22,7 @@ export class Course {
 
     create(course) {
         //Needed because the promise creates a closure.
+        console.log('create!');
         var testThis = this;
 
         return new Promise(function (resolve, reject) {
@@ -29,7 +32,8 @@ export class Course {
             course["_id"] = uuid.v4();
             
             // console.log('after', course);
-            resolve(testThis.connector.putData('Course', course));
+            // resolve(testThis.connector.putData('Course', course));
+            resolve(testThis.connector.putData('Nothing needed'));
         });
     }
 }

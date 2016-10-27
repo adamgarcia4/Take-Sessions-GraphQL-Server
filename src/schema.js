@@ -135,7 +135,7 @@ const rootResolvers = {
 	},
 	Mutation: {
 		createCourse(root, { course }, context) {
-			return context.Course.createCourse(course);
+			return context.Course.create(course);
 		}
 	}
 }
