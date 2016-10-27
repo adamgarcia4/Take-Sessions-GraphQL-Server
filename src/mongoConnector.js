@@ -93,14 +93,21 @@ export class MongoDBConnector {
 
             var model = mongoose.model('Course', outerThis.schema);
 
-            model.find({ }, function(err, docs) {
+            //.lean() converts the find results to pure JSON objects instead of Mongoose Objects
+            model.find({ }).lean().exec(function(err, docs) {
                 if(err) {
                     console.log(err);
                     return reject(new Error("Could not find properly."));
                 } else {
-                    console.log(docs);
-                    var arr = [docs];
-                    return resolve(arr);
+                    // console.log(docs);
+                    // console.log('type: ', typeof docs, docs);
+                    // var arr = [docs];
+                    // console.log('typeof: ', typeof arr);
+                    // arr.forEach(function(entry) {
+                    //     console.log('typeof!: ', typeof entry, entry);
+                    //     // console.log(entry._id);
+                    // });
+                    return resolve(docs);
                 }
             });
         });

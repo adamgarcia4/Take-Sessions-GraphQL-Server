@@ -72,7 +72,7 @@ export class DynamoDBConnector {
 			};
 			docClient.scan(params, function (err, data) {
 				if (err) return reject(err);
-				//console.log(data);
+				console.log(data["Items"]);
 				return resolve(data["Items"]);
 			});
 		})
