@@ -21,6 +21,7 @@ export class MongoDBConnector {
     }
 
     // Connects to database.  Call before every I/O Operation
+    // TODO: wrap in a promise to do .then
     connectToDB() {
         // TODO: need to pass in URI later
 
@@ -83,43 +84,25 @@ export class MongoDBConnector {
     // }
 
     getList() {
-        // const CourseSchema = new Schema({
-        //     _id: String,
-        //     name: String,
-        //     genre: String,
-        //     pic: String,
-        //     price: Number,
-        //     calendarID: String,
-        //     bio: String,
-        //     location: String,
-        //     material: String,
-        //     teachers: [String],
-        //     courseGroups: [String]
-        // });
 
-        // const Course = mongoose.model('Course', CourseSchema);
+        var outerThis = this;
 
-        // var locThis = this;
+        return new Promise(function(resolve, reject) {
 
-        return new Promise(function (resolve, reject) {
-            console.log('course schema', Course);
-            console.log('hi');
-            // mongo.once('open', function () {
-            Course.findById({ _id: "C1" }, function (err, courses) {
-                console.log('err: ', err);
-                console.log('courses: ', courses);
-                if (err) {
-                    return reject(new Error("Could not get courses"));
-                }
-                else {
-                    console.log('courses are: ', courses);
-                    return resolve(courses);
+            outerThis.connectToDB();
+
+            var model = mongoose.model('Course', outerThis.schema);
+
+            model.find({ }, function(err, docs) {
+                if(err) {
+                    console.log(err);
+                    return reject(new Error("Could not find properly."));
+                } else {
+                    console.log(docs);
+                    var arr = [docs];
+                    return resolve(arr);
                 }
             });
-            // })
-
-
         });
-
     }
 }
