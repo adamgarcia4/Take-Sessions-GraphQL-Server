@@ -1,70 +1,71 @@
+
+
 //**************Imports***************
 
-// import Mongoose from 'mongoose';
-
+// Utilizes Mongoose for MongoDB ORM
 var mongoose = require('mongoose');
+
+
+// Utilizes Bluebird promises for Async Nature
 import Promise from 'bluebird';
-var Course = require('./courseModel');
-var Schema = mongoose.Schema;
-mongoose.Promise = require('bluebird');
+mongoose.Promise = Promise; //Some Mongoose functions return promises
+
+
+// Random Number Generator for IDs
 var uuid = require('node-uuid');
 
 
-// console.log('woot');
-// var test = Course.findOne({ '_id': 'C1' }, function (err, data) {
-//     console.log('hi?');
-//     if (err) {
-//         console.error('error is: ', err);
-//     } else {
-//         console.log('data is: ', data);
-//     }
-
-// });
-
-// console.log('test', test);
 
 export class MongoDBConnector {
 
-    //Initialize DB Connection
     constructor() {
 
     }
 
+    // Connects to database.  Call before every I/O Operation
     connectToDB() {
-        // Connects to database.  If connection already, do not attempt to connect
         // TODO: need to pass in URI later
-        
-        const mongo = mongoose.connect('mongodb://adamgarcia4:Grimmick15@ds049476.mlab.com:49476/graphql-backend', (err) => {
-            if (err) {
-                console.error('Could not connect to MongoDB on port _____');
-            } else {
-                console.log('woo');
-            }
-        });
+
+        //If MongoDB Connection is disconnected
+        if (mongoose.connection.readyState == 0) {
+            
+            //Creates Connection
+            const mongo = mongoose.connect('mongodb://adamgarcia4:Grimmick15@ds049476.mlab.com:49476/graphql-backend', (err) => {
+                if (err) {
+                    console.error('Could not connect to MongoDB.');
+                } else {
+                    console.log('Connection Succeeded.');
+                }
+            });
+        }
     }
 
+    // Import respective Model's Schema.  Abstracted to use across Models.
+    // TODO: There will be a problem when going from 1-2 models.  Either Lookup table or object input with all models
     setSchema(reqSchema) {
         this.schema = reqSchema;
     }
 
+    //Used to store data
     putData(newObject) {
-        this.connectToDB();
-        console.log('we inside!');
 
+        //Needed because promise creates a closure
+        var outerThis = this;
+        
+        return new Promise(function (resolve, reject) {
+            
+            //ensure a connection is established before attempting a save
+            outerThis.connectToDB();
+            
+            var newModel = new outerThis.schema(newObject);
 
-        var newCourse = new this.schema({
-            _id: uuid.v4(),
-            name: "Adam",
-        })
-
-
-        console.log('new course', newCourse);
-        newCourse.save(function (err) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('we win');
-            }
+            newModel.save(function (err, result) {
+                if (err) {
+                    return reject(new Error("Could not save properly."));
+                } else {
+                    return resolve(result);
+                }
+            })
         })
     }
 

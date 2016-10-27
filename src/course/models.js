@@ -21,19 +21,13 @@ export class Course {
     }
 
     create(course) {
+        
         //Needed because the promise creates a closure.
-        console.log('create!');
         var testThis = this;
 
         return new Promise(function (resolve, reject) {
-            // console.log('before', course);
             
-            // Adds a random ID to the model
-            course["_id"] = uuid.v4();
-            
-            // console.log('after', course);
-            // resolve(testThis.connector.putData('Course', course));
-            resolve(testThis.connector.putData('Nothing needed'));
+            resolve(testThis.connector.putData(course));
         });
     }
 }
