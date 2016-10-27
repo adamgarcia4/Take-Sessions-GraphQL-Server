@@ -14,8 +14,6 @@ mongoose.Promise = Promise; //Some Mongoose functions return promises
 // Random Number Generator for IDs
 var uuid = require('node-uuid');
 
-
-
 export class MongoDBConnector {
 
     constructor() {
@@ -43,6 +41,7 @@ export class MongoDBConnector {
     // Import respective Model's Schema.  Abstracted to use across Models.
     // TODO: There will be a problem when going from 1-2 models.  Either Lookup table or object input with all models
     setSchema(reqSchema) {
+        // console.log(reqSchema);
         this.schema = reqSchema;
     }
 
@@ -56,11 +55,16 @@ export class MongoDBConnector {
             
             //ensure a connection is established before attempting a save
             outerThis.connectToDB();
+
+            //Give Object a randomly-generated ID
+            newObject["_id"] = uuid.v4();
             
             var newModel = new outerThis.schema(newObject);
+            console.log(newModel);
 
             newModel.save(function (err, result) {
                 if (err) {
+                    console.log(err);
                     return reject(new Error("Could not save properly."));
                 } else {
                     return resolve(result);

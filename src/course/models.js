@@ -1,20 +1,22 @@
 
-// Imports
+//**************Imports***************
+
 var uuid = require('node-uuid');
-var mongooseSchema = require('../courseModel');
+// var mongooseSchema = require('../courseModel');
+import { mongoModel } from './schema';
 
 export class Course {
     constructor({ connector }) {
         this.connector = connector;
-        this.connector.setSchema(mongooseSchema);        
+        this.connector.setSchema(mongoModel);
     }
 
     getList() {
         //Add any validation here
 
-        // return this.connector.getDataList('Course');
         return this.connector.getList();
     }
+
 
     getById(_id) {
         return this.connector.getBatchData('Course', _id);
