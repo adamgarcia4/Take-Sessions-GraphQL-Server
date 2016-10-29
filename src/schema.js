@@ -20,7 +20,7 @@ import {
 } from './course/schema';
 
 import {
-	Teacher, resolvers as teacherResolvers
+	Teacher, TeacherInput, resolvers as teacherResolvers
 } from './teacher/schema';
 
 import {
@@ -74,6 +74,7 @@ type Query {
 type Mutation {
 	createCourse( course: CourseInput ): Course
 	createUser(user: UserInput): User
+	createTeacher(teacher: TeacherInput): Teacher
 }
 
 schema {
@@ -140,6 +141,9 @@ const rootResolvers = {
 		},
 		createUser(root, { user }, context) {
 			return context.User.create(user);
+		},
+		createTeacher(root, { teacher }, context) {
+			return context.Teacher.create(teacher);
 		}
 	}
 }
@@ -150,8 +154,10 @@ const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers, studen
 
 
 //**************Create Root Schema********************
+// console.log(CourseInput);
+// console.log(TeacherInput);
 const finalSchema = makeExecutableSchema({
-	typeDefs: [schema, Course, CourseInput, Teacher, User, UserInput, CourseGroup, Student, Session, Payment],
+	typeDefs: [schema, Course, CourseInput, Teacher, TeacherInput, User, UserInput, CourseGroup, Student, Session, Payment],
 	resolvers: resolvers,
 })
 

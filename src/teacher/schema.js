@@ -1,4 +1,7 @@
 
+// This is the Schema for the Teacher
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 
 export const Teacher = `
@@ -13,17 +16,40 @@ export const Teacher = `
     }
 `;
 
+export const TeacherInput = `
+    input TeacherInput {
+        calendarID: String
+        bio: String
+        numhearts: Int
+        musicLinks: [String]
+        courses: [String]
+        # user: String
+    }
+`;
+
 export const resolvers = {
     Teacher: {
         courses(root, { }, context) {
             // console.log('stuff is: ', root);
-            return context.Course.getById(root.courseID);
+            return context.Course.getById('Course', root.courseID);
         },
         user(root, { }, context) {
-            return context.User.getById(root.userID);
+            return context.User.getById('User', root.userID);
         }
     }
 }
+
+const mongoSchema = new mongoose.Schema({
+    _id: String,
+    calendarID: String,
+    bio: String,
+    numhearts: Number,
+    musicLinks: String,
+    courses: [String],
+    user: String,
+});
+
+export const mongoModel = mongoose.model('Teacher', mongoSchema);
 
 
 // const Teacher = new GraphQLObjectType({
