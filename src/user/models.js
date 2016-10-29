@@ -22,7 +22,7 @@ export class User {
 
 
     getById(_id) {
-        return this.connector.getById(_id);
+        return this.connector.getById('User', _id);
         // return this.connector.getByCustom({'_id': _id});
     }
 
@@ -37,7 +37,7 @@ export class User {
 
         return new Promise(function (resolve, reject) {
             
-            resolve(testThis.connector.putData(course));
+            resolve(testThis.connector.putData('User', course));
         });
     }
 }

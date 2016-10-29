@@ -53,7 +53,7 @@ export class MongoDBConnector {
     }
 
     //Used to store data
-    putData(newObject) {
+    putData(modelName, newObject) {
 
         //Needed because promise creates a closure
         var outerThis = this;
@@ -66,7 +66,7 @@ export class MongoDBConnector {
             //Give Object a randomly-generated ID
             newObject["_id"] = uuid.v4();
 
-            var newModel = new outerThis.model(newObject);
+            var newModel = new outerThis.modelList[modelName](newObject);
             console.log(newModel);
 
             newModel.save(function (err, result) {
@@ -109,7 +109,7 @@ export class MongoDBConnector {
     //         console.log('data is: ', data);
     //     })
     // }
-    getById(_id) {
+    getById(modelName, _id) {
 
         var outerThis = this;
 
@@ -120,7 +120,7 @@ export class MongoDBConnector {
             // var model = mongoose.model('Course', outerThis.model);
 
             //.lean() converts the find results to pure JSON objects instead of Mongoose Objects
-            outerThis.model.findById(_id).lean().exec(function (err, docs) {
+            outerThis.modelList[modelName].findById(_id).lean().exec(function (err, docs) {
                 if (err) {
                     console.log(err);
                     return reject(new Error("Could not find properly."));
