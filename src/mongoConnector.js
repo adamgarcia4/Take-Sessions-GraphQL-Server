@@ -27,7 +27,7 @@ export class MongoDBConnector {
 
         //If MongoDB Connection is disconnected
         if (mongoose.connection.readyState == 0) {
-            
+
             //Creates Connection
             const mongo = mongoose.connect('mongodb://adamgarcia4:Grimmick15@ds049476.mlab.com:49476/graphql-backend', (err) => {
                 if (err) {
@@ -41,9 +41,9 @@ export class MongoDBConnector {
 
     // Import respective Model's Schema.  Abstracted to use across Models.
     // TODO: There will be a problem when going from 1-2 models.  Either Lookup table or object input with all models
-    setSchema(reqSchema) {
+    setModel(model) {
         // console.log(reqSchema);
-        this.schema = reqSchema;
+        this.model = model;
     }
 
     //Used to store data
@@ -51,16 +51,16 @@ export class MongoDBConnector {
 
         //Needed because promise creates a closure
         var outerThis = this;
-        
+
         return new Promise(function (resolve, reject) {
-            
+
             //ensure a connection is established before attempting a save
             outerThis.connectToDB();
 
             //Give Object a randomly-generated ID
             newObject["_id"] = uuid.v4();
-            
-            var newModel = new outerThis.schema(newObject);
+
+            var newModel = new outerThis.model(newObject);
             console.log(newModel);
 
             newModel.save(function (err, result) {
@@ -74,6 +74,27 @@ export class MongoDBConnector {
         })
     }
 
+    getList() {
+
+        var outerThis = this;
+
+        return new Promise(function (resolve, reject) {
+
+            outerThis.connectToDB();
+
+            // var model = mongoose.model('Course', outerThis.model);
+
+            //.lean() converts the find results to pure JSON objects instead of Mongoose Objects
+            outerThis.model.find({}).lean().exec(function (err, docs) {
+                if (err) {
+                    console.log(err);
+                    return reject(new Error("Could not find properly."));
+                } else {
+                    return resolve(docs);
+                }
+            });
+        });
+    }
     // getOne(queryParam) {
     //     Course.findOne({ '_id': 'C1' }, function (err, data) {
     //         if (err) {
@@ -82,34 +103,48 @@ export class MongoDBConnector {
     //         console.log('data is: ', data);
     //     })
     // }
-
-    getList() {
+    getById(_id) {
 
         var outerThis = this;
 
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
 
             outerThis.connectToDB();
 
-            var model = mongoose.model('Course', outerThis.schema);
+            // var model = mongoose.model('Course', outerThis.model);
 
             //.lean() converts the find results to pure JSON objects instead of Mongoose Objects
-            model.find({ }).lean().exec(function(err, docs) {
-                if(err) {
+            outerThis.model.findById(_id).lean().exec(function (err, docs) {
+                if (err) {
                     console.log(err);
                     return reject(new Error("Could not find properly."));
                 } else {
-                    // console.log(docs);
-                    // console.log('type: ', typeof docs, docs);
-                    // var arr = [docs];
-                    // console.log('typeof: ', typeof arr);
-                    // arr.forEach(function(entry) {
-                    //     console.log('typeof!: ', typeof entry, entry);
-                    //     // console.log(entry._id);
-                    // });
                     return resolve(docs);
                 }
             });
         });
     }
+
+    // getByCustom(inputFindQuery) {
+    //     var outerThis = this;
+
+    //     return new Promise(function (resolve, reject) {
+
+    //         outerThis.connectToDB();
+    //         console.log('woot');
+    //         // var model = mongoose.model('Course', outerThis.model);
+
+    //         //.lean() converts the find results to pure JSON objects instead of Mongoose Objects
+    //         outerThis.model.find(inputFindQuery, {lean: true}, function (err, docs) {
+    //             if (err) {
+    //                 console.log(err);
+    //                 return reject(new Error("Could not find properly."));
+    //             } else {
+    //                 console.log('docs: ', typeof docs, docs);
+    //                 return resolve(docs);
+    //             }
+    //         });
+    //     });
+    // }
+
 }

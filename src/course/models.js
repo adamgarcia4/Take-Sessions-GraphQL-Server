@@ -8,7 +8,7 @@ import { mongoModel } from './schema';
 export class Course {
     constructor({ connector }) {
         this.connector = connector;
-        this.connector.setSchema(mongoModel);
+        this.connector.setModel(mongoModel);
     }
 
     getList() {
@@ -19,8 +19,13 @@ export class Course {
 
 
     getById(_id) {
-        return this.connector.getBatchData('Course', _id);
+        return this.connector.getById(_id);
+        // return this.connector.getByCustom({'_id': _id});
     }
+
+    // getByName(_id) {
+    //     return this.connector.getByCustom({'_id': _id});
+    // }
 
     create(course) {
         
