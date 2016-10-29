@@ -1,5 +1,7 @@
 
-
+// This is the Schema for the User
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 export const User = `
     type User {
@@ -18,7 +20,6 @@ export const User = `
 
 export const UserInput = `
     input UserInput {
-        _id: String!
         firstName: String
         lastName: String
         birthday: String
@@ -42,6 +43,21 @@ export const resolvers = {
         }
     }
 }
+
+const mongoSchema = new mongoose.Schema({
+    _id: String,
+    firstName: String,
+    lastName: String,
+    birthday: String,
+    email: Number,
+    avatar: String,
+    phoneNumber: String,
+    location: String,
+    student: String,
+    teacher: String,
+});
+
+export const mongoModel = mongoose.model('User', mongoSchema);
 
 
 // const User = new GraphQLObjectType({
@@ -70,3 +86,5 @@ export const resolvers = {
 // 		}
 // 	})
 // });
+
+

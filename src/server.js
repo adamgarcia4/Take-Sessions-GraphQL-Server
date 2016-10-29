@@ -79,6 +79,12 @@ app.use('/graphql', apolloExpress((req) => {
   }
 
   //Create new instance of the dynamodb connector 
+
+  // const modelList = {
+  //   'Course': 'courses',
+  //   'User': 'users'
+  // }
+
   const dynamoDBConnector = new DynamoDBConnector(); //TODO: Does this circumvent caching because it will create new instances of DynamoDB per request?
   const mongoDBConnector = new MongoDBConnector();
 
@@ -96,7 +102,7 @@ app.use('/graphql', apolloExpress((req) => {
       Course: new Course({ connector: mongoDBConnector }),
       Teacher: new Teacher({ connector: dynamoDBConnector }),
       CourseGroup: new CourseGroup({ connector: dynamoDBConnector }),
-      User: new User({ connector: dynamoDBConnector }),
+      User: new User({ connector: mongoDBConnector }),
       Student: new Student({ connector: dynamoDBConnector }),
       Session: new Session({ connector: dynamoDBConnector }),
       Payment: new Session({ connector: dynamoDBConnector }),

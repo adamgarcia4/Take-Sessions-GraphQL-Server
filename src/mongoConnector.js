@@ -17,7 +17,8 @@ var uuid = require('node-uuid');
 export class MongoDBConnector {
 
     constructor() {
-
+        // this.modelList = modelList;
+        this.modelList = {};
     }
 
     // Connects to database.  Call before every I/O Operation
@@ -41,9 +42,14 @@ export class MongoDBConnector {
 
     // Import respective Model's Schema.  Abstracted to use across Models.
     // TODO: There will be a problem when going from 1-2 models.  Either Lookup table or object input with all models
-    setModel(model) {
+    pushModel(model) {
         // console.log(reqSchema);
-        this.model = model;
+        var modelName = Object.keys(model)[0];
+        console.log(modelName);
+        // console.log(model[modelName]);
+        this.modelList[modelName] = model[modelName];
+        // console.log(this.modelList);
+        // Object.keys(model);// = model;
     }
 
     //Used to store data
@@ -74,7 +80,7 @@ export class MongoDBConnector {
         })
     }
 
-    getList() {
+    getList(modelName) {
 
         var outerThis = this;
 
@@ -83,9 +89,9 @@ export class MongoDBConnector {
             outerThis.connectToDB();
 
             // var model = mongoose.model('Course', outerThis.model);
-
+            // console.log()
             //.lean() converts the find results to pure JSON objects instead of Mongoose Objects
-            outerThis.model.find({}).lean().exec(function (err, docs) {
+            outerThis.modelList[modelName].find({}).lean().exec(function (err, docs) {
                 if (err) {
                     console.log(err);
                     return reject(new Error("Could not find properly."));

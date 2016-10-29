@@ -7,14 +7,17 @@ import { mongoModel } from './schema';
 
 export class Course {
     constructor({ connector }) {
+        connector.pushModel({'Course': mongoModel});
         this.connector = connector;
-        this.connector.setModel(mongoModel);
+
+        // this.connector = connector;
+        // this.connector.setModel(mongoModel);
     }
 
     getList() {
         //Add any validation here
 
-        return this.connector.getList();
+        return this.connector.getList('Course');
     }
 
 
