@@ -47,6 +47,7 @@ export class MongoDBConnector {
         var modelName = Object.keys(model)[0];
         console.log(modelName);
         // console.log(model[modelName]);
+        console.model;
         this.modelList[modelName] = model[modelName];
         // console.log(this.modelList);
         // Object.keys(model);// = model;
@@ -65,7 +66,7 @@ export class MongoDBConnector {
 
             //Give Object a randomly-generated ID
             newObject["_id"] = uuid.v4();
-
+            // console.log(outerThis.modelList);
             var newModel = new outerThis.modelList[modelName](newObject);
             console.log(newModel);
 

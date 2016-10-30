@@ -1,13 +1,28 @@
 
+// This is the Schema for the CourseGroup
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 
 export const CourseGroup = `
     type CourseGroup {
         _id: String
+        testField: String
         course: Course
         students: [Student]
         teachers: [Teacher]
         sessions: [Session]
+    }
+`;
+
+export const CourseGroupInput = `
+    input CourseGroupInput {
+        testField: String
+        course: String
+        user: String
+        students: [String]
+        teachers: [String]
+        sessions: [String]
     }
 `;
 
@@ -29,3 +44,15 @@ export const resolvers = {
         }
     }
 }
+
+const mongoSchema = new mongoose.Schema({
+    _id: String,
+    testField: String,
+    course: String,
+    user: String,
+    students: [String],
+    teachers: [String],
+    sessions: [String]
+});
+
+export const mongoModel = mongoose.model('CourseGroup', mongoSchema);

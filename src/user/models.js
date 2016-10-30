@@ -36,7 +36,7 @@ export class User {
         var testThis = this;
 
         return new Promise(function (resolve, reject) {
-            
+            // console.log(course);
             resolve(testThis.connector.putData('User', course));
         });
     }
