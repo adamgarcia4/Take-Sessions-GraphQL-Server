@@ -1,10 +1,19 @@
 
+// This is the Schema for the Session
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 
 export const Session = `
     type Session {
         _id: String!
         payments: [Payment]
+    }
+`;
+
+export const SessionInput = `
+    input SessionInput {
+        payments: [String]
     }
 `;
 
@@ -16,3 +25,10 @@ export const resolvers = {
         }
     }
 }
+
+const mongoSchema = new mongoose.Schema({
+    _id: String,
+    payments: [String]
+});
+
+export const mongoModel = mongoose.model('Session', mongoSchema);

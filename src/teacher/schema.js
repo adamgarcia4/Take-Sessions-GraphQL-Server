@@ -23,7 +23,7 @@ export const TeacherInput = `
         numhearts: Int
         musicLinks: [String]
         courses: [String]
-        # user: String
+        user: String
     }
 `;
 

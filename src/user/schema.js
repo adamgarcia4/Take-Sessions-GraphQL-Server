@@ -27,8 +27,8 @@ export const UserInput = `
         avatar: String
         phoneNumber: String
         location: String
-        # student: String
-        # teacher: String
+        student: String
+        teacher: String
     }
 `;
 
