@@ -1,4 +1,7 @@
 
+// This is the Schema for the Student
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 
 export const Student = `
@@ -10,20 +13,13 @@ export const Student = `
     }
 `;
 
-// export const CourseInput = `
-//     input CourseInput {
-//         name: String
-//         genre: String
-//         pic: String
-//         price: Int
-//         calendarID: String
-//         bio: String
-//         location: String
-//         material: String
-//         teacher: [String]
-//         courseGroup: [String]
-//     }
-// `;
+export const StudentInput = `
+    input StudentInput {
+        calendarID: String
+        user: String
+        courseGroups: [String]
+    }
+`;
 
 export const resolvers = {
     Student: {
@@ -37,7 +33,14 @@ export const resolvers = {
     }
 }
 
+const mongoSchema = new mongoose.Schema({
+    _id: String,
+    calendarID: String,
+    user: String,
+    courseGroups: [String]
+});
 
+export const mongoModel = mongoose.model('Student', mongoSchema);
 
 // const Student = new GraphQLObjectType({
 // 	name: 'Student',

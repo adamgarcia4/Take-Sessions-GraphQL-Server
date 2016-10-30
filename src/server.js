@@ -103,7 +103,7 @@ app.use('/graphql', apolloExpress((req) => {
       Teacher: new Teacher({ connector: mongoDBConnector }),
       CourseGroup: new CourseGroup({ connector: dynamoDBConnector }),
       User: new User({ connector: mongoDBConnector }),
-      Student: new Student({ connector: dynamoDBConnector }),
+      Student: new Student({ connector: mongoDBConnector }),
       Session: new Session({ connector: dynamoDBConnector }),
       Payment: new Session({ connector: dynamoDBConnector }),
     },
