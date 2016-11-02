@@ -73,6 +73,7 @@ type Query {
 
 type Mutation {
 	createCourse( course: CourseInput ): Course
+	updateCourse( _id: String!, course: CourseInput): Course
 	createUser(user: UserInput): User
 	createTeacher(teacher: TeacherInput): Teacher
 	createStudent(student: StudentInput): Student
@@ -142,6 +143,12 @@ const rootResolvers = {
 	Mutation: {
 		createCourse(root, { course }, context) {
 			return context.Course.create(course);
+		},
+		updateCourse(root, { _id, course }, context) {
+			console.log('inside mutation');
+			// console.log('id: ', _id);
+			// console.log('course: ', course);
+			return context.Course.update(_id, course);
 		},
 		createUser(root, { user }, context) {
 			return context.User.create(user);

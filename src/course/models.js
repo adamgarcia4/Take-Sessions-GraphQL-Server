@@ -40,4 +40,17 @@ export class Course {
             resolve(testThis.connector.putData('Course', course));
         });
     }
+
+    update(_id, courseAttr) {
+        console.log('inside update');
+        console.log('_id: ',_id);
+        console.log('courseAttr: ', courseAttr);
+        //Needed because the promise creates a closure.
+        var testThis = this;
+
+        return new Promise(function (resolve, reject) {
+            
+            resolve(testThis.connector.updateData('Course', _id, courseAttr));
+        });
+    }
 }
