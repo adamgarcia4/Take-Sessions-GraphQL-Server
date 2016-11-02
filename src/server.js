@@ -32,7 +32,7 @@ import executableSchema from './schema';
 //**************Database Connector Imports***************
 
 import { DynamoDBConnector } from './dynamodb';
-
+import { MongoDBConnector } from './mongoConnector';
 
 //**************Model Imports***************
 
@@ -79,7 +79,14 @@ app.use('/graphql', apolloExpress((req) => {
   }
 
   //Create new instance of the dynamodb connector 
-  const dynamoDBConnector = new DynamoDBConnector(); //TODO: Does this circumvent caching because it will create new instances of DynamoDB per request?
+
+  // const modelList = {
+  //   'Course': 'courses',
+  //   'User': 'users'
+  // }
+
+  // const dynamoDBConnector = new DynamoDBConnector(); //TODO: Does this circumvent caching because it will create new instances of DynamoDB per request?
+  const mongoDBConnector = new MongoDBConnector();
 
   //TODO: Add user validation checking
   
@@ -91,13 +98,14 @@ app.use('/graphql', apolloExpress((req) => {
 
     //Pass in all models to be used anywhere along the resolve tree.  Passed to resolve on compile time.
     context: { 
-      Course: new Course({ connector: dynamoDBConnector }),
-      Teacher: new Teacher({ connector: dynamoDBConnector }),
-      CourseGroup: new CourseGroup({ connector: dynamoDBConnector }),
-      User: new User({ connector: dynamoDBConnector }),
-      Student: new Student({ connector: dynamoDBConnector }),
-      Session: new Session({ connector: dynamoDBConnector }),
-      Payment: new Session({ connector: dynamoDBConnector }),
+      // Course: new Course({ connector: dynamoDBConnector }),
+      Course: new Course({ connector: mongoDBConnector }),
+      Teacher: new Teacher({ connector: mongoDBConnector }),
+      CourseGroup: new CourseGroup({ connector: mongoDBConnector }),
+      User: new User({ connector: mongoDBConnector }),
+      Student: new Student({ connector: mongoDBConnector }),
+      Session: new Session({ connector: mongoDBConnector }),
+      Payment: new Session({ connector: mongoDBConnector }),
     },
   };
 
@@ -110,6 +118,11 @@ app.use(
     endpointURL: '/graphql',
   })
 )
+
+// app.get('/test', function (req, res) {
+//   const mongoDBConnector = new MongoDBConnector();
+//   mongoDB
+// });
 
 //Set the app to listen for HTTP Requests
 app.listen(PORT, () => console.log('Now go to port ' + PORT + '   POST /graphql or GET /graphiql'));

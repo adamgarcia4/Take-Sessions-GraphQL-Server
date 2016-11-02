@@ -20,27 +20,27 @@ import {
 } from './course/schema';
 
 import {
-	Teacher, resolvers as teacherResolvers
+	Teacher, TeacherInput, resolvers as teacherResolvers
 } from './teacher/schema';
 
 import {
-	CourseGroup, resolvers as courseGroupResolvers
+	CourseGroup, CourseGroupInput, resolvers as courseGroupResolvers
 } from './courseGroup/schema';
 
 import {
-	User, resolvers as userResolvers
+	User, UserInput, resolvers as userResolvers
 } from './user/schema';
 
 import {
-	Student, resolvers as studentResolvers
+	Student, StudentInput, resolvers as studentResolvers
 } from './student/schema';
 
 import {
-	Session, resolvers as sessionResolvers //, resolvers as studentResolvers
+	Session, SessionInput, resolvers as sessionResolvers //, resolvers as studentResolvers
 } from './session/schema';
 
 import {
-	Payment, resolvers as paymentResolvers //, resolvers as studentResolvers
+	Payment, PaymentInput, resolvers as paymentResolvers //, resolvers as studentResolvers
 } from './payment/schema';
 
 // import {
@@ -73,6 +73,12 @@ type Query {
 
 type Mutation {
 	createCourse( course: CourseInput ): Course
+	createUser(user: UserInput): User
+	createTeacher(teacher: TeacherInput): Teacher
+	createStudent(student: StudentInput): Student
+	createCourseGroup(courseGroup: CourseGroupInput): CourseGroup
+	createPayment(payment: PaymentInput): Payment
+	createSession(session: SessionInput): Session
 }
 
 schema {
@@ -135,7 +141,25 @@ const rootResolvers = {
 	},
 	Mutation: {
 		createCourse(root, { course }, context) {
-			return context.Course.createCourse(course);
+			return context.Course.create(course);
+		},
+		createUser(root, { user }, context) {
+			return context.User.create(user);
+		},
+		createTeacher(root, { teacher }, context) {
+			return context.Teacher.create(teacher);
+		},
+		createStudent(root, { student }, context) {
+			return context.Student.create(student);
+		},
+		createCourseGroup(root, { courseGroup }, context) {
+			return context.CourseGroup.create(courseGroup);
+		},
+		createPayment(root, { payment }, context) {
+			return context.Payment.create(payment);
+		},
+		createSession(root, { session }, context) {
+			return context.Session.create(session);
 		}
 	}
 }
@@ -146,8 +170,17 @@ const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers, studen
 
 
 //**************Create Root Schema********************
+
 const finalSchema = makeExecutableSchema({
-	typeDefs: [schema, Course, CourseInput, Teacher, User, CourseGroup, Student, Session, Payment],
+	typeDefs: [schema, 
+		Course, CourseInput, 
+		Teacher, TeacherInput, 
+		User, UserInput, 
+		CourseGroup, CourseGroupInput, 
+		Student, StudentInput, 
+		Session, SessionInput, 
+		Payment, PaymentInput
+	],
 	resolvers: resolvers,
 })
 

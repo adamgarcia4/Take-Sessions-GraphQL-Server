@@ -1,5 +1,7 @@
 
 // This is the Schema for the Course
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 import Teacher from '../teacher/schema';
 
@@ -45,6 +47,24 @@ export const resolvers = {
         }
     }
 }
+
+//Circumvents the "Cannot recompile schema" error
+const mongoSchema = new mongoose.Schema({
+    _id: String,
+    name: String,
+    genre: String,
+    pic: String,
+    price: Number,
+    calendarID: String,
+    bio: String,
+    location: String,
+    material: String,
+    teachers: [String],
+    courseGroups: [String]
+});
+
+export const mongoModel = mongoose.model('Course', mongoSchema);
+//module.exports = mongoose.model('Course', CourseSchema);
 
 
 
