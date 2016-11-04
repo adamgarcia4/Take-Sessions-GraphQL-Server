@@ -7,7 +7,7 @@ import { mongoModel } from './schema';
 
 export class CourseGroup {
     constructor({ connector }) {
-        connector.pushModel({'CourseGroup': mongoModel});
+        connector.pushModel({ 'CourseGroup': mongoModel });
         this.connector = connector;
 
         // this.connector = connector;
@@ -31,13 +31,23 @@ export class CourseGroup {
     // }
 
     create(courseGroup) {
-        
+
         //Needed because the promise creates a closure.
         var testThis = this;
 
         return new Promise(function (resolve, reject) {
             // console.log(courseGroup);
             resolve(testThis.connector.putData('CourseGroup', courseGroup));
+        });
+    }
+
+    update(_id, courseGroupAttr) {
+        //Needed because the promise creates a closure.
+        var testThis = this;
+
+        return new Promise(function (resolve, reject) {
+
+            resolve(testThis.connector.updateData('CourseGroup', _id, courseGroupAttr));
         });
     }
 }

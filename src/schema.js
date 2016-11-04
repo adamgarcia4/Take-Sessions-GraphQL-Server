@@ -75,11 +75,17 @@ type Mutation {
 	createCourse( course: CourseInput ): Course
 	updateCourse( _id: String!, course: CourseInput): Course
 	createUser(user: UserInput): User
+	updateUser( _id: String!, user: UserInput): User
 	createTeacher(teacher: TeacherInput): Teacher
+	updateTeacher(_id: String!, teacher: TeacherInput): Teacher
 	createStudent(student: StudentInput): Student
+	updateStudent(_id: String!, student: StudentInput): Student
 	createCourseGroup(courseGroup: CourseGroupInput): CourseGroup
+	updateCourseGroup(_id: String!, courseGroup: CourseGroupInput): CourseGroup
 	createPayment(payment: PaymentInput): Payment
+	updatePayment(_id: String!, payment: PaymentInput): Payment
 	createSession(session: SessionInput): Session
+	updateSession(_id: String!, session: SessionInput): Session
 }
 
 schema {
@@ -153,21 +159,39 @@ const rootResolvers = {
 		createUser(root, { user }, context) {
 			return context.User.create(user);
 		},
+		updateUser(root, { _id, user }, context) {
+			return context.User.update(_id, user);
+		},
 		createTeacher(root, { teacher }, context) {
 			return context.Teacher.create(teacher);
+		},
+		updateTeacher(root, { _id, teacher }, context) {
+			return context.Teacher.update(_id, teacher);
 		},
 		createStudent(root, { student }, context) {
 			return context.Student.create(student);
 		},
+		updateStudent(root, { _id, student }, context) {
+			return context.Student.update(_id, student);
+		},
 		createCourseGroup(root, { courseGroup }, context) {
 			return context.CourseGroup.create(courseGroup);
+		},
+		updateCourseGroup(root, { _id, courseGroup }, context) {
+			return context.CourseGroup.update(_id, courseGroup);
 		},
 		createPayment(root, { payment }, context) {
 			return context.Payment.create(payment);
 		},
+		updatePayment(root, { _id, payment }, context) {
+			return context.Payment.update(_id, payment);
+		},
 		createSession(root, { session }, context) {
 			return context.Session.create(session);
-		}
+		},
+		updateSession(root, { _id, session }, context) {
+			return context.Session.update(_id, session);
+		},
 	}
 }
 // console.log('typedef', [schema, Course]);
@@ -179,13 +203,13 @@ const resolvers = merge(rootResolvers, courseResolvers, teacherResolvers, studen
 //**************Create Root Schema********************
 
 const finalSchema = makeExecutableSchema({
-	typeDefs: [schema, 
-		Course, CourseInput, 
-		Teacher, TeacherInput, 
-		User, UserInput, 
-		CourseGroup, CourseGroupInput, 
-		Student, StudentInput, 
-		Session, SessionInput, 
+	typeDefs: [schema,
+		Course, CourseInput,
+		Teacher, TeacherInput,
+		User, UserInput,
+		CourseGroup, CourseGroupInput,
+		Student, StudentInput,
+		Session, SessionInput,
 		Payment, PaymentInput
 	],
 	resolvers: resolvers,
