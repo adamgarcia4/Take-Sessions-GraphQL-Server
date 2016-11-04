@@ -81,6 +81,95 @@ export class MongoDBConnector {
         })
     }
 
+    putDataWithoutId(modelName, newObject) {
+
+        //Needed because promise creates a closure
+        var outerThis = this;
+
+        return new Promise(function (resolve, reject) {
+
+            //ensure a connection is established before attempting a save
+            outerThis.connectToDB();
+
+            //Give Object a randomly-generated ID
+            // newObject["_id"] = uuid.v4();
+            // console.log(outerThis.modelList);
+            var newModel = new outerThis.modelList[modelName](newObject);
+            console.log(newModel);
+
+            newModel.save(function (err, result) {
+                if (err) {
+                    console.log(err);
+                    return reject(new Error("Could not save properly."));
+                } else {
+                    return resolve(result);
+                }
+            })
+        })
+    }
+
+    updateData(modelName, id, updatedAttr) {
+
+        //Needed because promise creates a closure
+        var outerThis = this;
+
+        return new Promise(function (resolve, reject) {
+
+            //ensure a connection is established before attempting a save
+            outerThis.connectToDB();
+
+            //Grab Model definition
+            var model = outerThis.modelList[modelName];
+
+            //First find existing entry in database
+            model.findById(id, function (err, oldDoc) {
+                if (err) {
+                    return reject(new Error("Could not find properly.")); //TODO: Should not return
+                } else {
+                    // console.log('olddoc: ', oldDoc);
+                    if (oldDoc === null) {
+                        console.log('we in');
+                        return resolve(null);
+                    } else {
+                        // console.log(typeof oldDoc);
+                        //Replace all old attributes with new ones
+                        for (var key in updatedAttr) {
+                            oldDoc[key] = updatedAttr[key];
+                        }
+                        oldDoc.save(function (err, updatedDoc) {
+                            if (err) {
+                                console.log(err);
+                                return reject(new Error("Could not save properly."));
+                            } else {
+                                return resolve(updatedDoc);
+                            }
+                        })
+                    }
+                }
+            })
+        });
+
+
+
+
+
+
+        //     console.log(newModel);
+
+        //     newModel.findByIdAndUpdate(id, )
+
+        //     save(function (err, result) {
+        //         if (err) {
+        //             console.log(err);
+        //             return reject(new Error("Could not save properly."));
+        //         } else {
+        //             return resolve(result);
+        //         }
+        //     })
+        // })
+        // });
+    }
+
     getList(modelName) {
 
         var outerThis = this;
