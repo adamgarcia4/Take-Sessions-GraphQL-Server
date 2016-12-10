@@ -1,0 +1,11 @@
+mutation {
+  createStudent(student: {
+    _id: "S111",
+    calendarID: "CID#1"
+    userID: "U1"
+    courseGroupID: ["CG1", "CG2"]
+  }) {
+    _id
+    calendarID
+  }
+}

@@ -1,0 +1,67 @@
+query {
+  courses {
+    _id
+    name
+    teacher {
+      _id
+    }
+    courseGroup {
+      _id
+    }
+  }
+}
+
+query {
+  teachers {
+    _id
+    courses {
+      _id
+    }
+    user {
+      _id
+    }
+  }
+}
+
+query {
+  students {
+    _id
+    user {
+      _id
+    }
+    courseGroups {
+      _id
+    }
+  }
+}
+
+query {
+  courseGroups {
+    _id
+    course {
+      _id
+    }
+    students {
+      _id
+    }
+    teachers {
+      _id
+    }
+    sessions {
+      _id
+    }
+  }
+}
+
+query {
+  users {
+    _id
+    student {
+      _id
+    }
+    teacher {
+      _id
+    }
+  }
+}
+

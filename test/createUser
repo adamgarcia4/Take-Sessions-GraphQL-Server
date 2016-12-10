@@ -1,0 +1,19 @@
+mutation {
+  createUser(user: {
+    _id: "S1"
+    name: "Adam G"
+    studentID: "S3"
+    teacherID: "T1"
+  }) {
+    _id
+    name
+    student {
+      _id
+      name
+    }
+    teacher {
+      _id
+      genre
+    }
+  }
+}

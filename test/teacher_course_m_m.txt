@@ -1,0 +1,18 @@
+{
+  teachers {
+    _id
+    courses {
+      _id
+      name
+    }
+  }
+}
+
+{
+  courses {
+    _id
+    teacher {
+      _id
+    }
+  }
+}

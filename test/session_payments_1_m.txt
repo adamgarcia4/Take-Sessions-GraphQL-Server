@@ -1,0 +1,17 @@
+{
+	payments {
+    _id
+    session {
+      _id
+    }
+  }
+}
+
+{
+  sessions {
+    _id
+    payment {
+      _id
+    }
+  }
+}
