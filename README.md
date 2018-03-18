@@ -1,15 +1,13 @@
 # Take Sessions (Backend GraphQL Server)
 
 ## Motivation for Startup
-To provide an end-to-end service to sustain musicians by providing a stream of students to teach, branding opportunities, and a full-service organizational package to help musicians achieve their dreams.
+To provide an end-to-end service to sustain musicians by providing a stream of students to teach, branding opportunities, and a full-service organizational package to help musicians achieve their dreams.  The current platform can be found here: http://takesessions.com/
 
 I acted as the Lead Software Engineer for approximately 4 months where I designed the database structure, and build out the infrastructure.
 
 ## Overall Software Architecture
-[embed]https://www.docdroid.net/9KGj2dk/untitled-diagram.pdf[/embed]
-
-
-
+Below is the architecture of the backend system that I designed, coded, and deployed to support the engineering efforts.  Much effort was made to establish a clear separation of concerns as well as establishing modularity to make scaling and future expansions at the database layer trivial.
+<img src="https://github.com/adamgarcia4/Take-Sessions-GraphQL-Server/blob/adamgarcia4-patch-1/systemDesign.jpg?raw=true" alt="alt text" width="700">
 
 ## Database Layer
 For technical and cost reasons, a decision was made to utilize two databases.  Therefore, a need arose to develop database abstractions.
@@ -22,8 +20,6 @@ The database was designed to be a fully Promise-based solution.  This further ab
 
 ### MongoDB (https://goo.gl/9jvtQR)
 Created MongoDB wrapper to obscure any low-level API database calls.  Also, this database wrapper complies to a promise implementation.
-
-
 
 ## Technology Used
 
